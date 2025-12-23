@@ -1,7 +1,17 @@
 // TrackMate Profile JavaScript
 
-// Check authentication
-const user = checkAuth();
+// Check authentication (checkAuth is defined in auth.js)
+let user = null;
+try {
+    const userData = localStorage.getItem('trackmate_user');
+    if (userData) {
+        user = JSON.parse(userData);
+    } else {
+        window.location.href = 'login.html';
+    }
+} catch (e) {
+    window.location.href = 'login.html';
+}
 
 // Load user profile data
 function loadProfileData() {

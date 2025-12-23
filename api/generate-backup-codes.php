@@ -1,6 +1,9 @@
 <?php
 require_once '../config/config.php';
 
+// Set JSON header
+header('Content-Type: application/json');
+
 // This endpoint generates backup codes for a user
 // Call this after successful signup or from user settings
 

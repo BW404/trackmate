@@ -46,17 +46,21 @@ function getDBConnection() {
 
 // Configure session for cross-origin access
 if (session_status() === PHP_SESSION_NONE) {
-    // Session cookie settings for Tailscale and network access
+    // Session cookie settings
     ini_set('session.cookie_lifetime', SESSION_LIFETIME);
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
-    ini_set('session.cookie_domain', ''); // Empty allows any domain
-    ini_set('session.cookie_path', '/');
-    ini_set('session.cookie_samesite', 'None'); // Allow cross-site cookies
+    ini_set('session.cookie_path', '/trackmate/');
     ini_set('session.cookie_httponly', '1'); // Security
     
-    // For Tailscale/network access, you may need to disable secure flag
-    // Uncomment next line if using HTTPS
-    // ini_set('session.cookie_secure', '1');
+    // For localhost development, use Lax instead of None
+    // SameSite=None requires HTTPS and secure flag
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        ini_set('session.cookie_samesite', 'None');
+        ini_set('session.cookie_secure', '1');
+    } else {
+        ini_set('session.cookie_samesite', 'Lax');
+        ini_set('session.cookie_secure', '0');
+    }
     
     session_start();
 }
@@ -66,12 +70,6 @@ header('Access-Control-Allow-Origin: ' . ($_SERVER['HTTP_ORIGIN'] ?? '*'));
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
-
-// CORS headers for API requests
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Content-Type: application/json');
 
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

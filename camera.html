@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF9F66">
+    <meta name="description" content="TrackMate Camera Monitoring">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <title>Camera Monitoring - TrackMate</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/camera.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <svg width="40" height="40" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+            </svg>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+            </a>
+            <a href="calendar.html" class="nav-item">
+                <span class="icon">📅</span>
+            </a>
+            <a href="camera.html" class="nav-item active">
+                <span class="icon">📷</span>
+            </a>
+            <a href="timer.html" class="nav-item">
+                <span class="icon">⏰</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <span class="icon">⚙️</span>
+            </a>
+        </nav>
+        
+        <a href="profile.html" class="nav-item profile-icon">
+            <span class="icon">👤</span>
+        </a>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg width="30" height="30" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                        <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                        <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                        <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="header-title">Camera Monitoring</h1>
+                    <p class="header-date" id="currentDate"></p>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="icon-btn">🔍</button>
+                <button class="icon-btn">🔔</button>
+                <a href="profile.html" class="icon-btn" title="View Profile">👤</a>
+                <button class="icon-btn" onclick="logout()" title="Logout">🚪</button>
+            </div>
+        </header>
+        
+        <!-- Camera Content -->
+        <div class="camera-container">
+            <!-- Camera Status Card -->
+            <div class="status-card">
+                <div class="status-header">
+                    <h2>Camera Status</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="cameraToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <p class="status-text" id="statusText">Camera monitoring is currently disabled</p>
+            </div>
+            
+            <!-- Camera Feed Grid -->
+            <div class="camera-grid">
+                <!-- Live Camera Feed -->
+                <div class="camera-feed-card">
+                    <div class="card-header">
+                        <h3>Live Feed</h3>
+                        <span class="status-badge" id="liveBadge">Inactive</span>
+                    </div>
+                    <div class="video-container" id="videoContainer">
+                        <video id="cameraFeed" autoplay playsinline></video>
+                        <div class="video-placeholder" id="videoPlaceholder">
+                            <span class="camera-icon">📷</span>
+                            <p>Camera feed not active</p>
+                            <button class="btn-start" onclick="startCamera()">Start Camera</button>
+                        </div>
+                    </div>
+                    <div class="camera-controls">
+                        <button class="control-btn" onclick="captureSnapshot()" id="captureBtn" disabled>
+                            <span>📸</span> Capture
+                        </button>
+                        <button class="control-btn" onclick="toggleRecording()" id="recordBtn" disabled>
+                            <span>⏺️</span> Record
+                        </button>
+                        <button class="control-btn" onclick="stopCamera()" id="stopBtn" disabled>
+                            <span>⏹️</span> Stop
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Detection Settings -->
+                <div class="detection-card">
+                    <h3>Detection Settings</h3>
+                    <div class="detection-options">
+                        <div class="option-item">
+                            <div class="option-info">
+                                <span class="option-icon">👤</span>
+                                <div>
+                                    <div class="option-name">Face Detection</div>
+                                    <div class="option-desc">Detect presence in frame</div>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="faceDetection">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="option-item">
+                            <div class="option-info">
+                                <span class="option-icon">🎯</span>
+                                <div>
+                                    <div class="option-name">Motion Detection</div>
+                                    <div class="option-desc">Alert on movement</div>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="motionDetection">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="option-item">
+                            <div class="option-info">
+                                <span class="option-icon">⏱️</span>
+                                <div>
+                                    <div class="option-name">Activity Tracking</div>
+                                    <div class="option-desc">Track study sessions</div>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="activityTracking" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="option-item">
+                            <div class="option-info">
+                                <span class="option-icon">🔔</span>
+                                <div>
+                                    <div class="option-name">Break Reminders</div>
+                                    <div class="option-desc">Notify after long sessions</div>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="breakReminders" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="sensitivity-slider">
+                        <label>Detection Sensitivity</label>
+                        <input type="range" id="sensitivity" min="1" max="10" value="5">
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity Log -->
+            <div class="activity-log-card">
+                <div class="log-header">
+                    <h3>Activity Log</h3>
+                    <button class="btn-clear" onclick="clearLog()">Clear Log</button>
+                </div>
+                <div class="log-list" id="activityLog">
+                    <div class="log-item">
+                        <span class="log-time">12:30 PM</span>
+                        <span class="log-icon">📷</span>
+                        <span class="log-text">Camera monitoring started</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-time">12:45 PM</span>
+                        <span class="log-icon">👤</span>
+                        <span class="log-text">User detected in frame</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-time">1:15 PM</span>
+                        <span class="log-icon">⏱️</span>
+                        <span class="log-text">Study session: 45 minutes</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-time">1:30 PM</span>
+                        <span class="log-icon">🔔</span>
+                        <span class="log-text">Break reminder sent</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Snapshots Gallery -->
+            <div class="snapshots-card">
+                <div class="snapshots-header">
+                    <h3>Recent Snapshots</h3>
+                    <button class="btn-view-all" onclick="viewAllSnapshots()">View All</button>
+                </div>
+                <div class="snapshots-grid" id="snapshotsGrid">
+                    <div class="snapshot-placeholder">
+                        <span class="placeholder-icon">📸</span>
+                        <p>No snapshots yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/camera.js"></script>
+</body>
+</html>

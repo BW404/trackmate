@@ -1,7 +1,17 @@
 // TrackMate Dashboard JavaScript
 
-// Check authentication
-const user = checkAuth();
+// Check authentication (checkAuth is defined in auth.js)
+let user = null;
+try {
+    const userData = localStorage.getItem('trackmate_user');
+    if (userData) {
+        user = JSON.parse(userData);
+    } else {
+        window.location.href = 'login.html';
+    }
+} catch (e) {
+    window.location.href = 'login.html';
+}
 
 // Update date
 function updateDate() {
@@ -90,6 +100,7 @@ document.getElementById('editProfileForm')?.addEventListener('submit', async (e)
     
     const formData = new FormData(e.target);
     const data = {
+        user_id: user?.user_id || user?.id, // Include user_id as fallback
         full_name: formData.get('full_name'),
         username: formData.get('username'),
         email: formData.get('email'),
@@ -112,9 +123,11 @@ document.getElementById('editProfileForm')?.addEventListener('submit', async (e)
         const result = await response.json();
         
         if (result.success) {
-            // Update local user data
-            Object.assign(user, data);
-            localStorage.setItem('user', JSON.stringify(user));
+            // Update local user data with the data returned from server
+            if (result.user) {
+                user = result.user;
+                localStorage.setItem('trackmate_user', JSON.stringify(user));
+            }
             
             // Update UI
             updateGreeting();
@@ -130,7 +143,7 @@ document.getElementById('editProfileForm')?.addEventListener('submit', async (e)
         }
     } catch (error) {
         console.error('Error updating profile:', error);
-        alert('An error occurred while updating profile');
+        alert('An error occurred while updating profile. Please check your connection and try again.');
     }
 });
 
