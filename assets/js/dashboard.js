@@ -28,9 +28,29 @@ function updateDate() {
 // Update greeting
 function updateGreeting() {
     const greetingEl = document.getElementById('userGreeting');
-    if (greetingEl && user) {
+    const profileNameEl = document.getElementById('profileName');
+    const profileEmailEl = document.getElementById('profileEmail');
+    const avatarTextEl = document.getElementById('avatarText');
+    
+    if (user) {
         const name = user.full_name ? user.full_name.split(' ')[0] : user.username;
-        greetingEl.textContent = `Hello, ${name}`;
+        
+        if (greetingEl) {
+            greetingEl.textContent = `Hello, ${name}`;
+        }
+        
+        if (profileNameEl) {
+            profileNameEl.textContent = user.full_name || user.username;
+        }
+        
+        if (profileEmailEl) {
+            profileEmailEl.textContent = user.email || 'user@trackmate.com';
+        }
+        
+        if (avatarTextEl) {
+            const initial = (user.full_name || user.username).charAt(0).toUpperCase();
+            avatarTextEl.textContent = initial;
+        }
     }
 }
 
@@ -175,62 +195,116 @@ function logout() {
     }
 }
 
-// Simple productivity chart
+// Initialize chart with Chart.js
 function initChart() {
     const canvas = document.getElementById('productivityChart');
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = 250;
     
-    const data = [
-        { study: 5, code: 3, meditation: 1 },
-        { study: 6, code: 4, meditation: 2 },
-        { study: 4, code: 5, meditation: 1 },
-        { study: 7, code: 3, meditation: 2 },
-        { study: 5, code: 6, meditation: 1 },
-        { study: 6, code: 4, meditation: 2 },
-        { study: 5, code: 5, meditation: 1 },
-        { study: 8, code: 3, meditation: 2 },
-        { study: 6, code: 4, meditation: 1 },
-        { study: 5, code: 5, meditation: 2 },
-        { study: 7, code: 4, meditation: 1 },
-        { study: 6, code: 5, meditation: 2 },
-        { study: 5, code: 6, meditation: 1 },
-        { study: 7, code: 4, meditation: 2 },
-        { study: 6, code: 5, meditation: 1 },
-        { study: 8, code: 3, meditation: 2 },
-        { study: 5, code: 6, meditation: 1 },
-        { study: 6, code: 4, meditation: 2 },
-        { study: 7, code: 5, meditation: 1 },
-        { study: 5, code: 6, meditation: 2 }
-    ];
-    
-    const barWidth = (canvas.width - 100) / data.length;
-    const maxHeight = 10;
-    const barSpacing = 2;
-    const groupSpacing = barWidth / 3;
-    
-    // Draw bars
-    data.forEach((day, index) => {
-        const x = 50 + (index * barWidth);
-        
-        // Study (red)
-        const studyHeight = (day.study / maxHeight) * 180;
-        ctx.fillStyle = '#FF6B6B';
-        ctx.fillRect(x, canvas.height - studyHeight - 30, groupSpacing - barSpacing, studyHeight);
-        
-        // Code (cyan)
-        const codeHeight = (day.code / maxHeight) * 180;
-        ctx.fillStyle = '#9CDDDD';
-        ctx.fillRect(x + groupSpacing, canvas.height - codeHeight - 30, groupSpacing - barSpacing, codeHeight);
-        
-        // Meditation (orange)
-        const meditationHeight = (day.meditation / maxHeight) * 180;
-        ctx.fillStyle = '#FF9F66';
-        ctx.fillRect(x + (groupSpacing * 2), canvas.height - meditationHeight - 30, groupSpacing - barSpacing, meditationHeight);
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                {
+                    label: 'Working',
+                    data: [6.5, 7.0, 5.5, 6.0, 5.5, 3.0, 2.0],
+                    borderColor: '#FF9F66',
+                    backgroundColor: 'rgba(255, 159, 102, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Phone Usage',
+                    data: [2.0, 2.0, 2.0, 2.0, 1.5, 1.0, 1.5],
+                    borderColor: '#9CDDDD',
+                    backgroundColor: 'rgba(156, 221, 221, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Sleep',
+                    data: [7.5, 8.0, 7.0, 7.5, 8.0, 9.0, 8.5],
+                    borderColor: '#A78BFA',
+                    backgroundColor: 'rgba(167, 139, 250, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + 'h';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10,
+                    grid: {
+                        borderDash: [5, 5],
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + 'h';
+                        },
+                        font: {
+                            size: 11
+                        },
+                        color: '#8E8E93'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        },
+                        color: '#8E8E93'
+                    }
+                }
+            }
+        }
     });
+}
+
+// Update legend colors
+function updateChartLegend() {
+    const workDot = document.querySelector('.work-dot');
+    const phoneDot = document.querySelector('.phone-dot');
+    const sleepDot = document.querySelector('.sleep-dot');
+    
+    if (workDot) workDot.style.background = '#FF9F66';
+    if (phoneDot) phoneDot.style.background = '#9CDDDD';
+    if (sleepDot) sleepDot.style.background = '#A78BFA';
 }
 
 // Clear notifications
@@ -246,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDate();
     updateGreeting();
     loadHealthData();
+    updateChartLegend();
     
     // Wait for canvas to be sized
     setTimeout(() => {
@@ -261,11 +336,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Refresh chart on window resize
-let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        initChart();
-    }, 250);
-});
+// Refresh chart on window resize (removed, Chart.js handles this)
+
