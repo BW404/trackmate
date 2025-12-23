@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF9F66">
+    <meta name="description" content="TrackMate Settings">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <title>Settings - TrackMate</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/settings.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <svg width="40" height="40" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+            </svg>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+            </a>
+            <a href="calendar.html" class="nav-item">
+                <span class="icon">📅</span>
+            </a>
+            <a href="camera.html" class="nav-item">
+                <span class="icon">📷</span>
+            </a>
+            <a href="timer.html" class="nav-item">
+                <span class="icon">⏰</span>
+            </a>
+            <a href="settings.html" class="nav-item active">
+                <span class="icon">⚙️</span>
+            </a>
+        </nav>
+        
+        <a href="profile.html" class="nav-item profile-icon">
+            <span class="icon">👤</span>
+        </a>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg width="30" height="30" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                        <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                        <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                        <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="header-title">Settings</h1>
+                    <p class="header-date" id="currentDate"></p>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="icon-btn">🔍</button>
+                <button class="icon-btn">🔔</button>
+                <a href="profile.html" class="icon-btn" title="View Profile">👤</a>
+                <button class="icon-btn" onclick="logout()" title="Logout">🚪</button>
+            </div>
+        </header>
+        
+        <!-- Settings Content -->
+        <div class="settings-container">
+            <!-- Settings Navigation -->
+            <div class="settings-nav">
+                <button class="settings-nav-btn active" onclick="showSettingsSection('general')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>General</span>
+                </button>
+                <button class="settings-nav-btn" onclick="showSettingsSection('notifications')">
+                    <span class="nav-icon">🔔</span>
+                    <span>Notifications</span>
+                </button>
+                <button class="settings-nav-btn" onclick="showSettingsSection('appearance')">
+                    <span class="nav-icon">🎨</span>
+                    <span>Appearance</span>
+                </button>
+                <button class="settings-nav-btn" onclick="showSettingsSection('privacy')">
+                    <span class="nav-icon">🔒</span>
+                    <span>Privacy & Security</span>
+                </button>
+                <button class="settings-nav-btn" onclick="showSettingsSection('data')">
+                    <span class="nav-icon">💾</span>
+                    <span>Data & Storage</span>
+                </button>
+                <button class="settings-nav-btn" onclick="showSettingsSection('about')">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </button>
+            </div>
+            
+            <!-- Settings Sections -->
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div id="generalSection" class="settings-section active">
+                    <h2 class="section-title">General Settings</h2>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Language & Region</h3>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Language</label>
+                            <select class="setting-select">
+                                <option value="en">English</option>
+                                <option value="es">Español</option>
+                                <option value="fr">Français</option>
+                                <option value="de">Deutsch</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Time Format</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="timeFormat" value="12" checked>
+                                    12-hour (AM/PM)
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="timeFormat" value="24">
+                                    24-hour
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Activity Tracking</h3>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Auto-track Activities</div>
+                                <div class="setting-desc">Automatically log your activities</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Daily Reminders</div>
+                                <div class="setting-desc">Get reminded to log activities</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Default Activity Duration</label>
+                            <input type="number" class="setting-input" value="25" min="1"> minutes
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications Settings -->
+                <div id="notificationsSection" class="settings-section">
+                    <h2 class="section-title">Notification Settings</h2>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Push Notifications</h3>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Enable Notifications</div>
+                                <div class="setting-desc">Receive push notifications</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="pushNotifications" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Timer Alerts</div>
+                                <div class="setting-desc">Alert when timers finish</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Break Reminders</div>
+                                <div class="setting-desc">Remind to take breaks</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Achievement Notifications</div>
+                                <div class="setting-desc">Celebrate your milestones</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Email Notifications</h3>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Weekly Summary</div>
+                                <div class="setting-desc">Receive weekly activity reports</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Product Updates</div>
+                                <div class="setting-desc">Get notified about new features</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appearance Settings -->
+                <div id="appearanceSection" class="settings-section">
+                    <h2 class="section-title">Appearance</h2>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Theme</h3>
+                        </div>
+                        <div class="theme-options">
+                            <div class="theme-option active">
+                                <div class="theme-preview light">
+                                    <div class="preview-header"></div>
+                                    <div class="preview-content"></div>
+                                </div>
+                                <span>Light</span>
+                            </div>
+                            <div class="theme-option">
+                                <div class="theme-preview dark">
+                                    <div class="preview-header"></div>
+                                    <div class="preview-content"></div>
+                                </div>
+                                <span>Dark</span>
+                            </div>
+                            <div class="theme-option">
+                                <div class="theme-preview auto">
+                                    <div class="preview-header"></div>
+                                    <div class="preview-content"></div>
+                                </div>
+                                <span>Auto</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Color Accent</h3>
+                        </div>
+                        <div class="color-options">
+                            <button class="color-option active" style="background: linear-gradient(135deg, #FF9F66, #FFB380);"></button>
+                            <button class="color-option" style="background: linear-gradient(135deg, #9CDDDD, #B4E5E5);"></button>
+                            <button class="color-option" style="background: linear-gradient(135deg, #845EF7, #9775FA);"></button>
+                            <button class="color-option" style="background: linear-gradient(135deg, #51CF66, #69DB7C);"></button>
+                            <button class="color-option" style="background: linear-gradient(135deg, #FF6B6B, #FF8787);"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Display</h3>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Compact Mode</div>
+                                <div class="setting-desc">Show more content on screen</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Animations</div>
+                                <div class="setting-desc">Enable smooth animations</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Privacy Settings -->
+                <div id="privacySection" class="settings-section">
+                    <h2 class="section-title">Privacy & Security</h2>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Privacy</h3>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Activity History</div>
+                                <div class="setting-desc">Save activity history</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Camera Access</div>
+                                <div class="setting-desc">Allow camera monitoring</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Analytics</div>
+                                <div class="setting-desc">Help improve TrackMate</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Security</h3>
+                        </div>
+                        <button class="action-btn" onclick="changePassword()">
+                            <span>🔒</span> Change Password
+                        </button>
+                        <button class="action-btn" onclick="manageBackupCodes()">
+                            <span>🔐</span> Manage Backup Codes
+                        </button>
+                        <button class="action-btn" onclick="manageSessions()">
+                            <span>📱</span> Active Sessions
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Data Settings -->
+                <div id="dataSection" class="settings-section">
+                    <h2 class="section-title">Data & Storage</h2>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Data Management</h3>
+                        </div>
+                        <button class="action-btn" onclick="exportData()">
+                            <span>📥</span> Export My Data
+                        </button>
+                        <button class="action-btn" onclick="importData()">
+                            <span>📤</span> Import Data
+                        </button>
+                        <button class="action-btn danger" onclick="clearData()">
+                            <span>🗑️</span> Clear All Data
+                        </button>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Storage Usage</h3>
+                        </div>
+                        <div class="storage-info">
+                            <div class="storage-bar">
+                                <div class="storage-fill" style="width: 35%"></div>
+                            </div>
+                            <div class="storage-text">35 MB of 100 MB used</div>
+                        </div>
+                        <button class="action-btn" onclick="manageStorage()">
+                            <span>💾</span> Manage Storage
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- About Settings -->
+                <div id="aboutSection" class="settings-section">
+                    <h2 class="section-title">About TrackMate</h2>
+                    
+                    <div class="setting-card">
+                        <div class="about-logo">
+                            <svg width="80" height="80" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                                <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                                <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                                <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+                            </svg>
+                        </div>
+                        <h3 class="about-title">TrackMate</h3>
+                        <p class="about-version">Version 1.0.0</p>
+                        <p class="about-description">
+                            Monitor your activities and enhance your productivity with TrackMate - 
+                            An intelligent activity tracking application.
+                        </p>
+                        
+                        <div class="about-links">
+                            <a href="#" class="about-link">Terms of Service</a>
+                            <a href="#" class="about-link">Privacy Policy</a>
+                            <a href="#" class="about-link">Help & Support</a>
+                            <a href="#" class="about-link">Report a Bug</a>
+                        </div>
+                        
+                        <p class="about-copyright">© 2025 TrackMate. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/settings.js"></script>
+</body>
+</html>

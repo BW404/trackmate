@@ -4,18 +4,10 @@
  * Updates user profile information
  */
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-// Handle preflight requests
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
 require_once '../config/config.php';
+
+// Set JSON header (CORS headers already set in config.php)
+header('Content-Type: application/json');
 
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -24,19 +16,30 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// Start session to get user ID
-session_start();
+// Session is already started in config.php, no need to start again
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Not authenticated']);
-    exit();
+    // Try to get user_id from request body as fallback
+    $input = file_get_contents('php://input');
+    $requestData = json_decode($input, true);
+    
+    if (isset($requestData['user_id']) && !empty($requestData['user_id'])) {
+        $user_id = intval($requestData['user_id']);
+    } else {
+        error_log("Session data: " . print_r($_SESSION, true));
+        error_log("Cookies: " . print_r($_COOKIE, true));
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Not authenticated. Please login again.']);
+        exit();
+    }
+} else {
+    $user_id = $_SESSION['user_id'];
 }
 
-$user_id = $_SESSION['user_id'];
-
-// Get JSON input
+// Get JSON input (if not already read)
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 

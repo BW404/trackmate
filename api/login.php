@@ -34,8 +34,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 try {
     $conn = getDBConnection();
     
-    // Get user by email
-    $stmt = $conn->prepare("SELECT id, username, email, password, full_name, is_active FROM users WHERE email = :email");
+    // Get user by email - fetch all user data
+    $stmt = $conn->prepare("SELECT id, username, email, password, full_name, gender, age, height, weight, membership_type, is_active FROM users WHERE email = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
     
@@ -85,10 +85,16 @@ try {
         'success' => true,
         'message' => 'Login successful',
         'data' => [
+            'id' => $user['id'],
             'user_id' => $user['id'],
             'username' => $user['username'],
             'email' => $user['email'],
             'full_name' => $user['full_name'],
+            'gender' => $user['gender'],
+            'age' => $user['age'],
+            'height' => $user['height'],
+            'weight' => $user['weight'],
+            'membership_type' => $user['membership_type'],
             'session_token' => $sessionToken
         ]
     ]);

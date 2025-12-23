@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF9F66">
+    <meta name="description" content="TrackMate Timer & Alarms">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <title>Timer & Alarms - TrackMate</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/timer.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <svg width="40" height="40" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+            </svg>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+            </a>
+            <a href="calendar.html" class="nav-item">
+                <span class="icon">📅</span>
+            </a>
+            <a href="camera.html" class="nav-item">
+                <span class="icon">📷</span>
+            </a>
+            <a href="timer.html" class="nav-item active">
+                <span class="icon">⏰</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <span class="icon">⚙️</span>
+            </a>
+        </nav>
+        
+        <a href="profile.html" class="nav-item profile-icon">
+            <span class="icon">👤</span>
+        </a>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg width="30" height="30" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                        <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                        <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                        <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="header-title">Timer & Alarms</h1>
+                    <p class="header-date" id="currentDate"></p>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="icon-btn">🔍</button>
+                <button class="icon-btn">🔔</button>
+                <a href="profile.html" class="icon-btn" title="View Profile">👤</a>
+                <button class="icon-btn" onclick="logout()" title="Logout">🚪</button>
+            </div>
+        </header>
+        
+        <!-- Timer Content -->
+        <div class="timer-container">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('timer')">
+                    <span>⏱️</span> Timer
+                </button>
+                <button class="tab-btn" onclick="switchTab('stopwatch')">
+                    <span>⏲️</span> Stopwatch
+                </button>
+                <button class="tab-btn" onclick="switchTab('alarms')">
+                    <span>⏰</span> Alarms
+                </button>
+                <button class="tab-btn" onclick="switchTab('pomodoro')">
+                    <span>🍅</span> Pomodoro
+                </button>
+            </div>
+            
+            <!-- Timer Tab -->
+            <div id="timerTab" class="tab-content active">
+                <div class="timer-main">
+                    <div class="timer-display-card">
+                        <div class="time-display" id="timerDisplay">25:00</div>
+                        <div class="timer-label">Ready to start</div>
+                        
+                        <div class="timer-controls">
+                            <button class="control-btn primary" onclick="startTimer()" id="timerStartBtn">
+                                <span>▶️</span> Start
+                            </button>
+                            <button class="control-btn" onclick="pauseTimer()" id="timerPauseBtn" disabled>
+                                <span>⏸️</span> Pause
+                            </button>
+                            <button class="control-btn" onclick="resetTimer()" id="timerResetBtn">
+                                <span>↻</span> Reset
+                            </button>
+                        </div>
+                        
+                        <div class="quick-timers">
+                            <button class="quick-timer-btn" onclick="setQuickTimer(5)">5m</button>
+                            <button class="quick-timer-btn" onclick="setQuickTimer(15)">15m</button>
+                            <button class="quick-timer-btn active" onclick="setQuickTimer(25)">25m</button>
+                            <button class="quick-timer-btn" onclick="setQuickTimer(45)">45m</button>
+                            <button class="quick-timer-btn" onclick="setQuickTimer(60)">60m</button>
+                        </div>
+                        
+                        <div class="custom-timer">
+                            <input type="number" id="customMinutes" placeholder="Minutes" min="1" max="999">
+                            <button class="btn-set-custom" onclick="setCustomTimer()">Set Timer</button>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-sessions-card">
+                        <h3>Today's Sessions</h3>
+                        <div class="sessions-list" id="sessionsList">
+                            <div class="session-item completed">
+                                <span class="session-icon">✅</span>
+                                <div class="session-info">
+                                    <div class="session-title">Study Session</div>
+                                    <div class="session-time">25 minutes • 10:30 AM</div>
+                                </div>
+                            </div>
+                            <div class="session-item completed">
+                                <span class="session-icon">✅</span>
+                                <div class="session-info">
+                                    <div class="session-title">Coding Practice</div>
+                                    <div class="session-time">45 minutes • 2:15 PM</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="session-stats">
+                            <div class="stat-box">
+                                <div class="stat-value" id="totalSessions">2</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="totalMinutes">70</div>
+                                <div class="stat-label">Total Minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stopwatch Tab -->
+            <div id="stopwatchTab" class="tab-content">
+                <div class="stopwatch-card">
+                    <div class="time-display" id="stopwatchDisplay">00:00:00</div>
+                    <div class="stopwatch-ms" id="stopwatchMs">00</div>
+                    
+                    <div class="timer-controls">
+                        <button class="control-btn primary" onclick="startStopwatch()" id="stopwatchStartBtn">
+                            <span>▶️</span> Start
+                        </button>
+                        <button class="control-btn" onclick="pauseStopwatch()" id="stopwatchPauseBtn" disabled>
+                            <span>⏸️</span> Pause
+                        </button>
+                        <button class="control-btn" onclick="lapStopwatch()" id="stopwatchLapBtn" disabled>
+                            <span>🏁</span> Lap
+                        </button>
+                        <button class="control-btn" onclick="resetStopwatch()" id="stopwatchResetBtn">
+                            <span>↻</span> Reset
+                        </button>
+                    </div>
+                    
+                    <div class="laps-list" id="lapsList">
+                        <h4>Lap Times</h4>
+                        <div class="laps-empty">No laps recorded yet</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alarms Tab -->
+            <div id="alarmsTab" class="tab-content">
+                <div class="alarms-main">
+                    <button class="btn-add-alarm" onclick="addAlarm()">
+                        <span>+</span> Add New Alarm
+                    </button>
+                    
+                    <div class="alarms-list">
+                        <div class="alarm-card">
+                            <div class="alarm-time">07:00 AM</div>
+                            <div class="alarm-label">Morning Wake Up</div>
+                            <div class="alarm-repeat">Mon, Tue, Wed, Thu, Fri</div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="alarm-card">
+                            <div class="alarm-time">08:00 PM</div>
+                            <div class="alarm-label">Study Reminder</div>
+                            <div class="alarm-repeat">Every day</div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pomodoro Tab -->
+            <div id="pomodoroTab" class="tab-content">
+                <div class="pomodoro-card">
+                    <div class="pomodoro-phase" id="pomodoroPhase">Work Session</div>
+                    <div class="time-display" id="pomodoroDisplay">25:00</div>
+                    <div class="pomodoro-round">Round <span id="pomodoroRound">1</span> of 4</div>
+                    
+                    <div class="timer-controls">
+                        <button class="control-btn primary" onclick="startPomodoro()" id="pomodoroStartBtn">
+                            <span>▶️</span> Start
+                        </button>
+                        <button class="control-btn" onclick="pausePomodoro()" id="pomodoroPauseBtn" disabled>
+                            <span>⏸️</span> Pause
+                        </button>
+                        <button class="control-btn" onclick="skipPomodoro()" id="pomodoroSkipBtn">
+                            <span>⏭️</span> Skip
+                        </button>
+                        <button class="control-btn" onclick="resetPomodoro()" id="pomodoroResetBtn">
+                            <span>↻</span> Reset
+                        </button>
+                    </div>
+                    
+                    <div class="pomodoro-settings">
+                        <div class="setting-row">
+                            <label>Work Duration</label>
+                            <input type="number" id="pomodoroWork" value="25" min="1" max="60"> minutes
+                        </div>
+                        <div class="setting-row">
+                            <label>Short Break</label>
+                            <input type="number" id="pomodoroShortBreak" value="5" min="1" max="30"> minutes
+                        </div>
+                        <div class="setting-row">
+                            <label>Long Break</label>
+                            <input type="number" id="pomodoroLongBreak" value="15" min="1" max="60"> minutes
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/timer.js"></script>
+</body>
+</html>
