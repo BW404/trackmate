@@ -39,6 +39,9 @@
             <a href="timer.html" class="nav-item">
                 <span class="icon">⏰</span>
             </a>
+            <a href="reports.html" class="nav-item">
+                <span class="icon">📈</span>
+            </a>
             <a href="settings.html" class="nav-item">
                 <span class="icon">⚙️</span>
             </a>
@@ -70,207 +73,348 @@
             
             <div class="header-right">
                 <button class="icon-btn">🔍</button>
-                <button class="icon-btn">🔔</button>
+                <button class="icon-btn notification-btn" id="notificationBtn" onclick="toggleNotifications()">
+                    🔔
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </button>
                 <a href="profile.html" class="icon-btn" title="View Profile">👤</a>
                 <button class="icon-btn" onclick="logout()" title="Logout">🚪</button>
             </div>
         </header>
         
+        <!-- Notification Dropdown -->
+        <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <button class="mark-all-read" onclick="markAllAsRead()">Mark all as read</button>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <!-- Notifications will be loaded here -->
+            </div>
+            <div class="notification-footer">
+                <a href="#" onclick="viewAllNotifications()">View all notifications</a>
+            </div>
+        </div>
+        
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
             <!-- Left Column -->
             <div class="left-column">
-                <!-- Activity Cards Row -->
-                <div class="activity-cards-row">
-                    <div class="activity-card card-study">
-                        <div class="card-header">
-                            <div class="card-icon">📚</div>
-                            <h3 class="card-title">Study</h3>
+                <!-- Quick Stats Cards -->
+                <div class="quick-stats-row">
+                    <a href="reports.html" class="stat-card">
+                        <div class="stat-icon">💻</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Work Today</div>
+                            <div class="stat-value">6.5<span>h</span></div>
                         </div>
-                        <div class="card-value">05<span class="unit">h</span></div>
-                        <div class="card-badge">Normal</div>
-                        <svg class="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
-                            <path d="M 0,20 L 20,15 L 40,18 L 60,12 L 80,16 L 100,10" 
-                                  stroke="#FFB366" stroke-width="2" fill="none"/>
-                            <path d="M 0,20 L 20,15 L 40,18 L 60,12 L 80,16 L 100,10 L 100,30 L 0,30 Z" 
-                                  fill="url(#gradStudy)"/>
-                            <defs>
-                                <linearGradient id="gradStudy" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#FFB366" stop-opacity="0.3"/>
-                                    <stop offset="100%" stop-color="#FFB366" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
+                        <div class="stat-trend up">+12%</div>
+                    </a>
                     
-                    <div class="activity-card card-meditation">
-                        <div class="card-header">
-                            <div class="card-icon">❤️</div>
-                            <h3 class="card-title">Meditation</h3>
+                    <a href="reports.html" class="stat-card">
+                        <div class="stat-icon">📱</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Phone Usage</div>
+                            <div class="stat-value">3.2<span>h</span></div>
                         </div>
-                        <div class="card-value">01<span class="unit">h</span></div>
-                        <div class="card-badge">Normal</div>
-                        <svg class="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
-                            <path d="M 0,18 L 20,14 L 40,16 L 60,13 L 80,15 L 100,12" 
-                                  stroke="#FFB3B3" stroke-width="2" fill="none"/>
-                            <path d="M 0,18 L 20,14 L 40,16 L 60,13 L 80,15 L 100,12 L 100,30 L 0,30 Z" 
-                                  fill="url(#gradMed)"/>
-                            <defs>
-                                <linearGradient id="gradMed" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#FFB3B3" stop-opacity="0.3"/>
-                                    <stop offset="100%" stop-color="#FFB3B3" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
+                        <div class="stat-trend down">-8%</div>
+                    </a>
                     
-                    <div class="activity-card card-screen">
-                        <div class="card-header">
-                            <div class="card-icon">📱</div>
-                            <h3 class="card-title">Screen Time</h3>
+                    <a href="calendar.html" class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Activities</div>
+                            <div class="stat-value">24<span></span></div>
                         </div>
-                        <div class="card-value">07<span class="unit">h</span></div>
-                        <div class="card-badge high">High</div>
-                        <svg class="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
-                            <path d="M 0,16 L 20,20 L 40,15 L 60,18 L 80,14 L 100,17" 
-                                  stroke="#9CDDDD" stroke-width="2" fill="none"/>
-                            <path d="M 0,16 L 20,20 L 40,15 L 60,18 L 80,14 L 100,17 L 100,30 L 0,30 Z" 
-                                  fill="url(#gradScreen)"/>
-                            <defs>
-                                <linearGradient id="gradScreen" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#9CDDDD" stop-opacity="0.3"/>
-                                    <stop offset="100%" stop-color="#9CDDDD" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                        <div class="stat-trend up">+3</div>
+                    </a>
+                    
+                    <a href="reports.html" class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Focus Score</div>
+                            <div class="stat-value">85<span>%</span></div>
+                        </div>
+                        <div class="stat-trend up">+5%</div>
+                    </a>
+                </div>
+                
+                <!-- AI Detection Status -->
+                <div class="ai-status-widget">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <span class="widget-icon">🤖</span>
+                            <h3>AI Activity Detection</h3>
+                        </div>
+                        <a href="camera.html" class="widget-link">View Camera →</a>
+                    </div>
+                    <div class="ai-status-content">
+                        <div class="current-activity">
+                            <div class="activity-label">Current Activity</div>
+                            <div class="activity-detected" id="currentActivity">2. Working 💻</div>
+                            <div class="activity-time">Last detected: Just now</div>
+                        </div>
+                        <div class="ai-quick-stats">
+                            <div class="ai-stat">
+                                <div class="ai-stat-value">89%</div>
+                                <div class="ai-stat-label">Accuracy</div>
+                            </div>
+                            <div class="ai-stat">
+                                <div class="ai-stat-value">142</div>
+                                <div class="ai-stat-label">Detections Today</div>
+                            </div>
+                            <div class="ai-stat">
+                                <div class="ai-stat-value">Active</div>
+                                <div class="ai-stat-label">Status</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Today's Schedule -->
+                <div class="schedule-widget">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <span class="widget-icon">📅</span>
+                            <h3>Today's Schedule</h3>
+                        </div>
+                        <a href="calendar.html" class="widget-link">View Calendar →</a>
+                    </div>
+                    <div class="schedule-items">
+                        <div class="schedule-item">
+                            <div class="schedule-time">09:00 AM</div>
+                            <div class="schedule-info">
+                                <div class="schedule-title">Team Meeting</div>
+                                <div class="schedule-duration">1 hour</div>
+                            </div>
+                            <div class="schedule-status upcoming">Upcoming</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-time">02:00 PM</div>
+                            <div class="schedule-info">
+                                <div class="schedule-title">Project Review</div>
+                                <div class="schedule-duration">2 hours</div>
+                            </div>
+                            <div class="schedule-status upcoming">Upcoming</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-time">05:30 PM</div>
+                            <div class="schedule-info">
+                                <div class="schedule-title">Workout Session</div>
+                                <div class="schedule-duration">45 min</div>
+                            </div>
+                            <div class="schedule-status upcoming">Upcoming</div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Productivity Graph -->
                 <div class="productivity-graph">
                     <div class="graph-header">
-                        <h3 class="section-title">Productivity Graph</h3>
-                        <select class="month-select">
-                            <option>April 2025</option>
-                            <option>May 2025</option>
-                        </select>
+                        <h3 class="section-title">Weekly Activity Overview</h3>
+                        <a href="reports.html" class="view-reports-link">View Full Report →</a>
                     </div>
                     <div class="chart-wrapper">
                         <canvas id="productivityChart"></canvas>
                     </div>
                     <div class="chart-legend">
-                        <span class="legend-item"><span class="dot study-dot"></span>Study</span>
-                        <span class="legend-item"><span class="dot code-dot"></span>Code</span>
-                        <span class="legend-item"><span class="dot meditation-dot"></span>Meditation</span>
+                        <span class="legend-item"><span class="dot work-dot"></span>Working</span>
+                        <span class="legend-item"><span class="dot phone-dot"></span>Phone Usage</span>
+                        <span class="legend-item"><span class="dot sleep-dot"></span>Sleep</span>
+                    </div>
+                </div>
+                
+                <!-- Active Timers Widget -->
+                <div class="timers-widget">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <span class="widget-icon">⏰</span>
+                            <h3>Active Timers & Alarms</h3>
+                        </div>
+                        <a href="timer.html" class="widget-link">Manage Timers →</a>
+                    </div>
+                    <div class="timers-content">
+                        <div class="timer-item pomodoro-active">
+                            <div class="timer-icon">🍅</div>
+                            <div class="timer-info">
+                                <div class="timer-name">Pomodoro Session</div>
+                                <div class="timer-countdown">15:32 remaining</div>
+                            </div>
+                            <button class="timer-action-btn">Pause</button>
+                        </div>
+                        <div class="timer-item">
+                            <div class="timer-icon">⏰</div>
+                            <div class="timer-info">
+                                <div class="timer-name">Lunch Break</div>
+                                <div class="timer-countdown">in 1h 25m</div>
+                            </div>
+                            <button class="timer-action-btn secondary">Snooze</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions-widget">
+                    <h3 class="widget-subtitle">Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <a href="camera.html" class="action-card">
+                            <div class="action-icon">📷</div>
+                            <div class="action-label">Start Camera</div>
+                        </a>
+                        <a href="timer.html" class="action-card">
+                            <div class="action-icon">⏱️</div>
+                            <div class="action-label">New Timer</div>
+                        </a>
+                        <a href="calendar.html" class="action-card">
+                            <div class="action-icon">➕</div>
+                            <div class="action-label">Add Event</div>
+                        </a>
+                        <a href="reports.html" class="action-card">
+                            <div class="action-icon">📊</div>
+                            <div class="action-label">View Reports</div>
+                        </a>
                     </div>
                 </div>
                 
                 <footer class="dashboard-footer">
-                    <span>TrackMate - 2025</span>
-                    <span>Stay Productive</span>
+                    <span>TrackMate © 2025</span>
+                    <span>Stay Productive & Healthy</span>
                 </footer>
             </div>
             
-            <!-- Right Column - Health Panel -->
+            <!-- Right Column - User & Insights Panel -->
             <div class="right-column">
-                <div class="health-panel">
-                    <div class="health-header">
-                        <h3 class="health-title">Health</h3>
-                        <span class="user-greeting" id="userGreeting">Hello, Taj</span>
+                <!-- User Profile Card -->
+                <div class="user-profile-card">
+                    <div class="profile-avatar">
+                        <div class="avatar-circle">
+                            <span class="avatar-text" id="avatarText">U</span>
+                        </div>
                     </div>
-                    
+                    <h3 class="profile-name" id="profileName">User</h3>
+                    <p class="profile-email" id="profileEmail">user@trackmate.com</p>
                     <button class="edit-profile-btn" onclick="openEditProfileModal()">
                         <span>✏️</span> Edit Profile
                     </button>
-                    
-                    <div class="health-info-cards">
-                        <div class="info-card height-card">
-                            <div class="info-label">Height</div>
-                            <div class="info-value" id="userHeight">170 cm</div>
+                </div>
+                
+                <!-- Today's Goals -->
+                <div class="goals-widget">
+                    <h3 class="widget-title-sidebar">Today's Goals</h3>
+                    <div class="goal-item">
+                        <div class="goal-header">
+                            <span class="goal-icon">💻</span>
+                            <span class="goal-name">Work 8 hours</span>
                         </div>
-                        <div class="info-card weight-card">
-                            <div class="info-label">Weight</div>
-                            <div class="info-value" id="userWeight">72 kg</div>
+                        <div class="goal-progress-bar">
+                            <div class="goal-progress-fill" style="width: 81%"></div>
                         </div>
-                    </div>
-                    
-                    <div class="bmi-section">
-                        <div class="bmi-label">Body Mass Index (BMI)</div>
-                        <div class="bmi-value" id="bmiValue">24.9</div>
-                        <div class="bmi-status healthy">You're Healthy</div>
-                        <div class="bmi-range-bar">
-                            <div class="bmi-marker" style="left: 50%;"></div>
+                        <div class="goal-stats">
+                            <span class="goal-current">6.5h</span>
+                            <span class="goal-target">/ 8h</span>
                         </div>
                     </div>
                     
-                    <div class="health-metrics">
-                        <div class="metric-item">
-                            <div class="metric-label">Heart Rate</div>
-                            <div class="metric-value" id="heartRate">44.5</div>
+                    <div class="goal-item">
+                        <div class="goal-header">
+                            <span class="goal-icon">📱</span>
+                            <span class="goal-name">Limit phone to 3h</span>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-label">Sleep (h)</div>
-                            <div class="metric-value" id="sleepHours">6.5</div>
+                        <div class="goal-progress-bar warning">
+                            <div class="goal-progress-fill" style="width: 93%"></div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-label">Water (glass)</div>
-                            <div class="metric-value" id="waterGlasses">6</div>
+                        <div class="goal-stats">
+                            <span class="goal-current">2.8h</span>
+                            <span class="goal-target">/ 3h</span>
                         </div>
                     </div>
                     
-                    <div class="body-diagram">
-                        <svg viewBox="0 0 200 380" class="body-svg">
-                            <!-- Head -->
-                            <circle cx="100" cy="45" r="28" fill="#FFDBAC"/>
-                            <!-- Hair -->
-                            <path d="M 72 38 Q 72 15, 100 15 Q 128 15, 128 38" fill="#3C2415" stroke="none"/>
-                            <!-- Facial features -->
-                            <circle cx="88" cy="42" r="2" fill="#3C2415"/>
-                            <circle cx="112" cy="42" r="2" fill="#3C2415"/>
-                            <path d="M 90 52 Q 100 56, 110 52" stroke="#3C2415" stroke-width="1" fill="none"/>
-                            
-                            <!-- Neck -->
-                            <rect x="92" y="70" width="16" height="22" fill="#FFDBAC"/>
-                            
-                            <!-- Upper Body (White T-shirt) -->
-                            <ellipse cx="100" cy="115" rx="42" ry="24" fill="#FFFFFF"/>
-                            
-                            <!-- Shoulder measurement line -->
-                            <line x1="45" y1="115" x2="155" y2="115" stroke="#FF4444" stroke-width="2.5"/>
-                            <circle cx="45" cy="115" r="4.5" fill="#FF4444"/>
-                            <circle cx="155" cy="115" r="4.5" fill="#FF4444"/>
-                            
-                            <!-- Arms -->
-                            <rect x="50" y="105" width="14" height="75" rx="7" fill="#FFDBAC"/>
-                            <rect x="136" y="105" width="14" height="75" rx="7" fill="#FFDBAC"/>
-                            
-                            <!-- Torso (White T-shirt) -->
-                            <path d="M 65 135 L 65 215 Q 65 220, 70 220 L 130 220 Q 135 220, 135 215 L 135 135" fill="#FFFFFF"/>
-                            
-                            <!-- Waist measurement line -->
-                            <line x1="52" y1="175" x2="148" y2="175" stroke="#FF4444" stroke-width="2.5"/>
-                            <circle cx="52" cy="175" r="4.5" fill="#FF4444"/>
-                            <circle cx="148" cy="175" r="4.5" fill="#FF4444"/>
-                            
-                            <!-- Lower Body (Black shorts) -->
-                            <rect x="72" y="220" width="26" height="85" rx="4" fill="#2C2C2C"/>
-                            <rect x="102" y="220" width="26" height="85" rx="4" fill="#2C2C2C"/>
-                            
-                            <!-- Hip measurement line -->
-                            <line x1="58" y1="240" x2="142" y2="240" stroke="#FF4444" stroke-width="2.5"/>
-                            <circle cx="58" cy="240" r="4.5" fill="#FF4444"/>
-                            <circle cx="142" cy="240" r="4.5" fill="#FF4444"/>
-                            
-                            <!-- Legs extension -->
-                            <rect x="74" y="305" width="22" height="35" fill="#FFDBAC"/>
-                            <rect x="104" y="305" width="22" height="35" fill="#FFDBAC"/>
-                            
-                            <!-- Shoes -->
-                            <ellipse cx="85" cy="350" rx="18" ry="10" fill="#1C1C1C"/>
-                            <ellipse cx="115" cy="350" rx="18" ry="10" fill="#1C1C1C"/>
-                            <ellipse cx="85" cy="348" rx="16" ry="7" fill="#3C3C3C"/>
-                            <ellipse cx="115" cy="348" rx="16" ry="7" fill="#3C3C3C"/>
-                        </svg>
+                    <div class="goal-item">
+                        <div class="goal-header">
+                            <span class="goal-icon">😴</span>
+                            <span class="goal-name">Sleep 8 hours</span>
+                        </div>
+                        <div class="goal-progress-bar success">
+                            <div class="goal-progress-fill" style="width: 97%"></div>
+                        </div>
+                        <div class="goal-stats">
+                            <span class="goal-current">7.8h</span>
+                            <span class="goal-target">/ 8h</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Streak -->
+                <div class="streak-widget">
+                    <h3 class="widget-title-sidebar">Activity Streak</h3>
+                    <div class="streak-display">
+                        <div class="streak-number">🔥 12</div>
+                        <div class="streak-label">Days in a row</div>
+                    </div>
+                    <div class="streak-calendar">
+                        <div class="streak-day active">M</div>
+                        <div class="streak-day active">T</div>
+                        <div class="streak-day active">W</div>
+                        <div class="streak-day active">T</div>
+                        <div class="streak-day active">F</div>
+                        <div class="streak-day">S</div>
+                        <div class="streak-day">S</div>
+                    </div>
+                    <p class="streak-message">Keep it up! You're on fire! 🚀</p>
+                </div>
+                
+                <!-- Recent Activities -->
+                <div class="recent-activities-widget">
+                    <h3 class="widget-title-sidebar">Recent Activities</h3>
+                    <div class="activity-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot working"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Working on Project</div>
+                                <div class="timeline-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot phone"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Phone Break</div>
+                                <div class="timeline-time">4 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot eating"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Lunch Time</div>
+                                <div class="timeline-time">5 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot working"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Morning Session</div>
+                                <div class="timeline-time">7 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Insights Card -->
+                <div class="insights-widget">
+                    <h3 class="widget-title-sidebar">💡 Daily Insights</h3>
+                    <div class="insight-item">
+                        <div class="insight-icon">📈</div>
+                        <div class="insight-text">
+                            <strong>Great focus!</strong> You're 25% more productive than yesterday
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">⚠️</div>
+                        <div class="insight-text">
+                            <strong>Screen time alert:</strong> You're close to your 3-hour limit
+                        </div>
                     </div>
                 </div>
             </div>
@@ -336,6 +480,7 @@
         </div>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/dashboard.js"></script>
 </body>

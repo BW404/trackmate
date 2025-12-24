@@ -40,6 +40,9 @@
             <a href="timer.html" class="nav-item">
                 <span class="icon">⏰</span>
             </a>
+            <a href="reports.html" class="nav-item">
+                <span class="icon">📈</span>
+            </a>
             <a href="settings.html" class="nav-item">
                 <span class="icon">⚙️</span>
             </a>
@@ -62,10 +65,12 @@
                 <div class="profile-card">
                     <div class="avatar-section">
                         <div class="avatar-wrapper">
-                            <div class="avatar-circle">
-                                <span class="avatar-emoji">👤</span>
+                            <div class="avatar-circle" id="avatarCircle">
+                                <span class="avatar-emoji" id="avatarEmoji">👤</span>
+                                <img id="avatarImage" class="avatar-image" style="display: none;" alt="Profile Picture">
                             </div>
-                            <button class="edit-avatar-btn">📷</button>
+                            <button class="edit-avatar-btn" id="editAvatarBtn">📷</button>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
                         </div>
                         
                         <div class="profile-info">

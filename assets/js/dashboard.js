@@ -28,9 +28,59 @@ function updateDate() {
 // Update greeting
 function updateGreeting() {
     const greetingEl = document.getElementById('userGreeting');
-    if (greetingEl && user) {
+    const profileNameEl = document.getElementById('profileName');
+    const profileEmailEl = document.getElementById('profileEmail');
+    const avatarTextEl = document.getElementById('avatarText');
+    const avatarCircleEl = document.querySelector('.user-profile-card .avatar-circle');
+    
+    console.log('updateGreeting called');
+    console.log('User object:', user);
+    console.log('Profile image:', user?.profile_image);
+    console.log('Avatar circle element:', avatarCircleEl);
+    
+    if (user) {
         const name = user.full_name ? user.full_name.split(' ')[0] : user.username;
-        greetingEl.textContent = `Hello, ${name}`;
+        
+        if (greetingEl) {
+            greetingEl.textContent = `Hello, ${name}`;
+        }
+        
+        if (profileNameEl) {
+            profileNameEl.textContent = user.full_name || user.username;
+        }
+        
+        if (profileEmailEl) {
+            profileEmailEl.textContent = user.email || 'user@trackmate.com';
+        }
+        
+        // Update avatar - show image if available, otherwise show initial
+        if (avatarCircleEl) {
+            if (user.profile_image) {
+                console.log('Setting profile image:', user.profile_image);
+                // Clear existing content
+                avatarCircleEl.innerHTML = '';
+                // Create and add image
+                const img = document.createElement('img');
+                img.src = user.profile_image + '?t=' + new Date().getTime(); // Add cache buster
+                img.alt = 'Profile';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '50%';
+                img.onerror = () => {
+                    console.error('Failed to load image:', user.profile_image);
+                };
+                img.onload = () => {
+                    console.log('Image loaded successfully');
+                };
+                avatarCircleEl.appendChild(img);
+            } else {
+                console.log('No profile image, showing initial');
+                // Show initial if no image
+                const initial = (user.full_name || user.username).charAt(0).toUpperCase();
+                avatarCircleEl.innerHTML = `<div class="avatar-text" id="avatarText">${initial}</div>`;
+            }
+        }
     }
 }
 
@@ -175,62 +225,116 @@ function logout() {
     }
 }
 
-// Simple productivity chart
+// Initialize chart with Chart.js
 function initChart() {
     const canvas = document.getElementById('productivityChart');
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = 250;
     
-    const data = [
-        { study: 5, code: 3, meditation: 1 },
-        { study: 6, code: 4, meditation: 2 },
-        { study: 4, code: 5, meditation: 1 },
-        { study: 7, code: 3, meditation: 2 },
-        { study: 5, code: 6, meditation: 1 },
-        { study: 6, code: 4, meditation: 2 },
-        { study: 5, code: 5, meditation: 1 },
-        { study: 8, code: 3, meditation: 2 },
-        { study: 6, code: 4, meditation: 1 },
-        { study: 5, code: 5, meditation: 2 },
-        { study: 7, code: 4, meditation: 1 },
-        { study: 6, code: 5, meditation: 2 },
-        { study: 5, code: 6, meditation: 1 },
-        { study: 7, code: 4, meditation: 2 },
-        { study: 6, code: 5, meditation: 1 },
-        { study: 8, code: 3, meditation: 2 },
-        { study: 5, code: 6, meditation: 1 },
-        { study: 6, code: 4, meditation: 2 },
-        { study: 7, code: 5, meditation: 1 },
-        { study: 5, code: 6, meditation: 2 }
-    ];
-    
-    const barWidth = (canvas.width - 100) / data.length;
-    const maxHeight = 10;
-    const barSpacing = 2;
-    const groupSpacing = barWidth / 3;
-    
-    // Draw bars
-    data.forEach((day, index) => {
-        const x = 50 + (index * barWidth);
-        
-        // Study (red)
-        const studyHeight = (day.study / maxHeight) * 180;
-        ctx.fillStyle = '#FF6B6B';
-        ctx.fillRect(x, canvas.height - studyHeight - 30, groupSpacing - barSpacing, studyHeight);
-        
-        // Code (cyan)
-        const codeHeight = (day.code / maxHeight) * 180;
-        ctx.fillStyle = '#9CDDDD';
-        ctx.fillRect(x + groupSpacing, canvas.height - codeHeight - 30, groupSpacing - barSpacing, codeHeight);
-        
-        // Meditation (orange)
-        const meditationHeight = (day.meditation / maxHeight) * 180;
-        ctx.fillStyle = '#FF9F66';
-        ctx.fillRect(x + (groupSpacing * 2), canvas.height - meditationHeight - 30, groupSpacing - barSpacing, meditationHeight);
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                {
+                    label: 'Working',
+                    data: [6.5, 7.0, 5.5, 6.0, 5.5, 3.0, 2.0],
+                    borderColor: '#FF9F66',
+                    backgroundColor: 'rgba(255, 159, 102, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Phone Usage',
+                    data: [2.0, 2.0, 2.0, 2.0, 1.5, 1.0, 1.5],
+                    borderColor: '#9CDDDD',
+                    backgroundColor: 'rgba(156, 221, 221, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Sleep',
+                    data: [7.5, 8.0, 7.0, 7.5, 8.0, 9.0, 8.5],
+                    borderColor: '#A78BFA',
+                    backgroundColor: 'rgba(167, 139, 250, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + 'h';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10,
+                    grid: {
+                        borderDash: [5, 5],
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + 'h';
+                        },
+                        font: {
+                            size: 11
+                        },
+                        color: '#8E8E93'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        },
+                        color: '#8E8E93'
+                    }
+                }
+            }
+        }
     });
+}
+
+// Update legend colors
+function updateChartLegend() {
+    const workDot = document.querySelector('.work-dot');
+    const phoneDot = document.querySelector('.phone-dot');
+    const sleepDot = document.querySelector('.sleep-dot');
+    
+    if (workDot) workDot.style.background = '#FF9F66';
+    if (phoneDot) phoneDot.style.background = '#9CDDDD';
+    if (sleepDot) sleepDot.style.background = '#A78BFA';
 }
 
 // Clear notifications
@@ -246,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDate();
     updateGreeting();
     loadHealthData();
+    updateChartLegend();
     
     // Wait for canvas to be sized
     setTimeout(() => {
@@ -261,11 +366,173 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Refresh chart on window resize
-let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        initChart();
-    }, 250);
+// Reload user data when page becomes visible (e.g., coming back from profile page)
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        // Reload user data from localStorage
+        const userData = localStorage.getItem('trackmate_user');
+        if (userData) {
+            user = JSON.parse(userData);
+            updateGreeting();
+        }
+    }
 });
+
+// Also reload when window gets focus
+window.addEventListener('focus', () => {
+    const userData = localStorage.getItem('trackmate_user');
+    if (userData) {
+        user = JSON.parse(userData);
+        updateGreeting();
+    }
+});
+
+// Notification System
+let notifications = [];
+
+// Load notifications from localStorage or use sample data
+function loadNotifications() {
+    const stored = localStorage.getItem('trackmate_notifications');
+    if (stored) {
+        notifications = JSON.parse(stored);
+    } else {
+        // Sample notifications
+        notifications = [
+            {
+                id: 1,
+                type: 'success',
+                icon: '✅',
+                title: 'Goal Achieved!',
+                message: 'You completed your 8-hour work goal today.',
+                time: '5 minutes ago',
+                unread: true
+            },
+            {
+                id: 2,
+                type: 'warning',
+                icon: '⏰',
+                title: 'Break Time',
+                message: 'You\'ve been working for 2 hours. Time for a break!',
+                time: '15 minutes ago',
+                unread: true
+            },
+            {
+                id: 3,
+                type: 'info',
+                icon: '📊',
+                title: 'Weekly Report Ready',
+                message: 'Your weekly activity report is now available.',
+                time: '1 hour ago',
+                unread: true
+            },
+            {
+                id: 4,
+                type: 'alert',
+                icon: '📱',
+                title: 'Phone Usage Alert',
+                message: 'High phone usage detected during work hours.',
+                time: '2 hours ago',
+                unread: false
+            },
+            {
+                id: 5,
+                type: 'success',
+                icon: '🎯',
+                title: 'Streak Milestone',
+                message: 'Congratulations! 7-day streak achieved!',
+                time: 'Yesterday',
+                unread: false
+            }
+        ];
+        saveNotifications();
+    }
+    updateNotificationUI();
+}
+
+function saveNotifications() {
+    localStorage.setItem('trackmate_notifications', JSON.stringify(notifications));
+}
+
+function updateNotificationUI() {
+    const notificationList = document.getElementById('notificationList');
+    const badge = document.getElementById('notificationBadge');
+    
+    if (!notificationList) return;
+    
+    // Update badge count
+    const unreadCount = notifications.filter(n => n.unread).length;
+    if (badge) {
+        if (unreadCount > 0) {
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+    
+    // Render notifications
+    if (notifications.length === 0) {
+        notificationList.innerHTML = `
+            <div class="notification-empty">
+                <div class="notification-empty-icon">🔔</div>
+                <div class="notification-empty-text">No notifications yet</div>
+            </div>
+        `;
+    } else {
+        notificationList.innerHTML = notifications.map(notif => `
+            <div class="notification-item ${notif.unread ? 'unread' : ''}" onclick="markAsRead(${notif.id})">
+                <div class="notification-icon ${notif.type}">
+                    ${notif.icon}
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${notif.title}</div>
+                    <div class="notification-message">${notif.message}</div>
+                    <div class="notification-time">${notif.time}</div>
+                </div>
+                ${notif.unread ? '<div class="notification-dot"></div>' : ''}
+            </div>
+        `).join('');
+    }
+}
+
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.classList.toggle('active');
+}
+
+function markAsRead(id) {
+    const notif = notifications.find(n => n.id === id);
+    if (notif) {
+        notif.unread = false;
+        saveNotifications();
+        updateNotificationUI();
+    }
+}
+
+function markAllAsRead() {
+    notifications.forEach(n => n.unread = false);
+    saveNotifications();
+    updateNotificationUI();
+}
+
+function viewAllNotifications() {
+    // Could navigate to a dedicated notifications page
+    alert('All notifications view - Coming soon!');
+    toggleNotifications();
+}
+
+// Close notifications when clicking outside
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('notificationDropdown');
+    const btn = document.getElementById('notificationBtn');
+    
+    if (dropdown && btn && !dropdown.contains(e.target) && !btn.contains(e.target)) {
+        dropdown.classList.remove('active');
+    }
+});
+
+// Load notifications on page load
+loadNotifications();
+
+// Refresh chart on window resize (removed, Chart.js handles this)
+
