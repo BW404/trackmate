@@ -52,41 +52,6 @@ let recordedChunks = [];
 let aiDetectionInterval = null;
 let isAnalyzing = false;
 let lastActivity = 'No activity detected yet';
-let useHybridDetection = true;
-let hybridServerOnline = false;
-
-// Check hybrid server status
-async function checkHybridServerStatus() {
-    try {
-        const response = await fetch('api/analyze-activity-hybrid.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ check_health: true })
-        });
-        
-        const result = await response.json();
-        hybridServerOnline = result.hybrid_available || false;
-        
-        const statusEl = document.getElementById('hybridServerStatus');
-        const dotEl = statusEl.querySelector('.status-dot');
-        
-        if (hybridServerOnline) {
-            statusEl.innerHTML = '<span class="status-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #48BB78;"></span> Server online ⚡';
-            dotEl.style.background = '#48BB78';
-        } else {
-            statusEl.innerHTML = '<span class="status-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #F56565;"></span> Server offline (using Ollama)';
-            dotEl.style.background = '#F56565';
-        }
-    } catch (error) {
-        console.log('Hybrid server check failed:', error);
-        hybridServerOnline = false;
-        const statusEl = document.getElementById('hybridServerStatus');
-        if (statusEl) {
-            statusEl.innerHTML = '<span class="status-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #F56565;"></span> Server offline (using Ollama)';
-        }
-    }
-}
 
 // Update date
 function updateDate() {
@@ -396,14 +361,10 @@ async function analyzeCurrentFrame() {
         const imageData = canvas.toDataURL('image/jpeg', 0.9);
         
         // Show analyzing status
-        const detectionMethod = useHybridDetection && hybridServerOnline ? 'Hybrid ⚡' : 'Ollama 🤖';
-        updateDetectionStatus(`🔄 Analyzing (${detectionMethod})...`, 'analyzing');
-        
-        // Choose API endpoint based on detection method
-        const apiEndpoint = useHybridDetection ? 'api/analyze-activity-hybrid.php' : 'api/analyze-activity.php';
+        updateDetectionStatus('🔄 Analyzing...', 'analyzing');
         
         // Send to API
-        const response = await fetch(apiEndpoint, {
+        const response = await fetch('api/analyze-activity.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -415,13 +376,9 @@ async function analyzeCurrentFrame() {
         const result = await response.json();
         
         if (result.success) {
-            lastActivity = result.activity_name || result.activity;
-            const method = result.method || (useHybridDetection ? 'Hybrid' : 'Ollama');
-            const processingTime = result.processing_time ? ` (${result.processing_time}s)` : '';
-            const confidence = result.confidence ? ` ${Math.round(result.confidence * 100)}%` : '';
-            
-            updateDetectionStatus(`${lastActivity} - ${method}${confidence}${processingTime}`, 'detected');
-            addLogEntry(`Detected: ${lastActivity} [${method}]`, getActivityIcon(result.category));
+            lastActivity = result.activity;
+            updateDetectionStatus(result.activity, 'detected');
+            addLogEntry(`Detected: ${result.activity}`, getActivityIcon(result.category));
             
             // Store in session storage for dashboard
             storeActivityLog(result);
@@ -506,37 +463,6 @@ function logout() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     updateDate();
-    
-    // Check hybrid server status
-    checkHybridServerStatus();
-    
-    // Recheck hybrid server status every 30 seconds
-    setInterval(checkHybridServerStatus, 30000);
-    
-    // Handle hybrid detection toggle
-    const hybridToggle = document.getElementById('useHybridDetection');
-    if (hybridToggle) {
-        // Load saved preference
-        const savedPreference = localStorage.getItem('trackmate_use_hybrid');
-        if (savedPreference !== null) {
-            useHybridDetection = savedPreference === 'true';
-            hybridToggle.checked = useHybridDetection;
-        }
-        
-        // Handle toggle changes
-        hybridToggle.addEventListener('change', (e) => {
-            useHybridDetection = e.target.checked;
-            localStorage.setItem('trackmate_use_hybrid', useHybridDetection);
-            
-            const method = useHybridDetection ? 'Hybrid (MediaPipe + YOLO)' : 'Ollama AI';
-            addLogEntry(`Switched to ${method} detection`, '🔄');
-            
-            // Recheck server status if switching to hybrid
-            if (useHybridDetection) {
-                checkHybridServerStatus();
-            }
-        });
-    }
 });
 
 // Cleanup on page unload
