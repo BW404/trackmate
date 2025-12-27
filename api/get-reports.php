@@ -29,18 +29,16 @@ $endDate = $_GET['end_date'] ?? null;
 function getActivityReport($conn, $userId, $period, $startDate = null, $endDate = null) {
     $dateCondition = buildDateCondition($period, $startDate, $endDate);
     
-    // Get activity summary by category
+    // Get activity summary by category (simplified without window functions)
     $stmt = $conn->prepare("
         SELECT 
             activity_type,
             activity_name,
-            COUNT(*) as count,
-            SUM(TIMESTAMPDIFF(SECOND, created_at, 
-                COALESCE(LEAD(created_at) OVER (ORDER BY created_at), NOW()))) as total_seconds
+            COUNT(*) as count
         FROM activity_logs
         WHERE user_id = ? AND $dateCondition
         GROUP BY activity_type, activity_name
-        ORDER BY total_seconds DESC
+        ORDER BY count DESC
     ");
     
     $stmt->bind_param("i", $userId);
@@ -48,23 +46,28 @@ function getActivityReport($conn, $userId, $period, $startDate = null, $endDate 
     $result = $stmt->get_result();
     
     $summary = [];
-    $totalSeconds = 0;
+    $totalActivities = 0;
     
     while ($row = $result->fetch_assoc()) {
-        $seconds = (int)$row['total_seconds'];
-        $totalSeconds += $seconds;
+        $count = (int)$row['count'];
+        $totalActivities += $count;
+        
+        // Estimate hours based on activity count (assume 2-second intervals)
+        $estimatedSeconds = $count * 2;
         
         $summary[] = [
             'category' => (int)$row['activity_type'],
             'name' => $row['activity_name'],
-            'count' => (int)$row['count'],
-            'seconds' => $seconds,
-            'hours' => round($seconds / 3600, 2),
+            'count' => $count,
+            'seconds' => $estimatedSeconds,
+            'hours' => round($estimatedSeconds / 3600, 2),
             'percentage' => 0 // Will calculate after we know total
         ];
     }
     
-    // Calculate percentages
+    // Calculate total seconds and percentages
+    $totalSeconds = array_sum(array_column($summary, 'seconds'));
+    
     foreach ($summary as &$item) {
         $item['percentage'] = $totalSeconds > 0 ? round(($item['seconds'] / $totalSeconds) * 100, 1) : 0;
     }
@@ -73,6 +76,9 @@ function getActivityReport($conn, $userId, $period, $startDate = null, $endDate 
     
     // Get time series data for charts
     $timeSeriesData = getTimeSeriesData($conn, $userId, $period, $dateCondition);
+    
+    // Calculate total seconds for productivity
+    $totalSeconds = array_sum(array_column($summary, 'seconds'));
     
     // Get productivity metrics
     $productivity = calculateProductivity($summary, $totalSeconds);
@@ -83,7 +89,7 @@ function getActivityReport($conn, $userId, $period, $startDate = null, $endDate 
         'end_date' => $endDate ?? date('Y-m-d'),
         'summary' => $summary,
         'total_hours' => round($totalSeconds / 3600, 2),
-        'total_activities' => array_sum(array_column($summary, 'count')),
+        'total_activities' => $totalActivities,
         'time_series' => $timeSeriesData,
         'productivity' => $productivity
     ];
@@ -170,9 +176,7 @@ function getTimeSeriesData($conn, $userId, $period, $dateCondition) {
             $groupBy as time_label,
             activity_type,
             activity_name,
-            COUNT(*) as count,
-            SUM(TIMESTAMPDIFF(SECOND, created_at, 
-                COALESCE(LEAD(created_at) OVER (PARTITION BY activity_type ORDER BY created_at), NOW()))) as seconds
+            COUNT(*) as count
         FROM activity_logs
         WHERE user_id = ? AND $dateCondition
         GROUP BY time_label, activity_type, activity_name
@@ -190,11 +194,14 @@ function getTimeSeriesData($conn, $userId, $period, $dateCondition) {
             $timeSeries[$label] = [];
         }
         
+        // Estimate hours based on count (2 seconds per detection)
+        $estimatedSeconds = (int)$row['count'] * 2;
+        
         $timeSeries[$label][] = [
             'category' => (int)$row['activity_type'],
             'name' => $row['activity_name'],
             'count' => (int)$row['count'],
-            'hours' => round($row['seconds'] / 3600, 2)
+            'hours' => round($estimatedSeconds / 3600, 2)
         ];
     }
     
