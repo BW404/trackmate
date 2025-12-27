@@ -21,6 +21,7 @@ define('ACTIVITY_CATEGORIES', [
 
 // Performance Settings
 define('OLLAMA_TIMEOUT', 45); // Request timeout in seconds
+define('OLLAMA_CONNECT_TIMEOUT', 10); // Connection timeout in seconds
 define('OLLAMA_NUM_PREDICT', 100); // Max tokens for response
 define('OLLAMA_TEMPERATURE', 0.3); // Lower = more focused responses (0.0-1.0)
 
