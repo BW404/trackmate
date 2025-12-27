@@ -373,7 +373,15 @@ async function analyzeCurrentFrame() {
             body: JSON.stringify({ image: imageData })
         });
         
+        if (!response.ok) {
+            console.error('HTTP Error:', response.status, response.statusText);
+            const text = await response.text();
+            console.error('Response:', text);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const result = await response.json();
+        console.log('Analysis result:', result);
         
         if (result.success) {
             lastActivity = result.activity;
@@ -391,8 +399,8 @@ async function analyzeCurrentFrame() {
         
     } catch (error) {
         console.error('Analysis error:', error);
-        updateDetectionStatus('❌ Connection error - Make sure Python server is running', 'error');
-        addLogEntry('Connection error', '❌');
+        updateDetectionStatus('❌ Connection error - Check if Ollama server is accessible', 'error');
+        addLogEntry('Connection error - Check Ollama API', '❌');
     } finally {
         isAnalyzing = false;
     }

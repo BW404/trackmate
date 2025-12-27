@@ -5,8 +5,19 @@
  */
 
 // Ollama Server Configuration
-define('OLLAMA_API_URL', 'http://100.105.118.56:11433/api/generate');
+define('OLLAMA_API_URL', 'https://ollama1.bw404.com/api/generate');
 define('OLLAMA_MODEL', 'qwen3-vl:2b'); // Options: qwen3-vl:2b, llava:7b, llava:13b, etc.
+
+// Activity Categories
+define('ACTIVITY_CATEGORIES', [
+    1 => 'Using phone',
+    2 => 'Working',
+    3 => 'Using phone while working',
+    4 => 'Sleeping',
+    5 => 'Eating',
+    6 => 'Drinking',
+    7 => 'Other'
+]);
 
 // Performance Settings
 define('OLLAMA_TIMEOUT', 45); // Request timeout in seconds
