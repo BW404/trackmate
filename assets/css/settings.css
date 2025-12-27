@@ -470,10 +470,20 @@ input:checked + .toggle-slider:before {
     
     .settings-nav {
         grid-template-columns: 1fr;
+        gap: 0.375rem;
+    }
+    
+    .settings-nav-btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
     }
     
     .settings-content {
         padding: 1.5rem;
+    }
+    
+    .settings-section h2 {
+        font-size: 1.1rem;
     }
     
     .theme-options {
@@ -482,5 +492,67 @@ input:checked + .toggle-slider:before {
     
     .about-links {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-container {
+        padding: 0.75rem;
+    }
+    
+    .settings-nav {
+        gap: 0.25rem;
+    }
+    
+    .settings-nav-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .settings-content {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .settings-section {
+        padding: 1rem 0;
+    }
+    
+    .settings-section h2 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .setting-item {
+        padding: 1rem;
+    }
+    
+    .setting-info h3 {
+        font-size: 0.95rem;
+    }
+    
+    .setting-info p {
+        font-size: 0.85rem;
+    }
+    
+    .theme-option {
+        padding: 1rem;
+    }
+    
+    .about-link {
+        padding: 1rem;
+    }
+    
+    .about-link h3 {
+        font-size: 0.95rem;
+    }
+    
+    .danger-zone-content {
+        padding: 1rem;
+    }
+    
+    .btn-danger {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
     }
 }

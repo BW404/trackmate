@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Login Test</title>
+</head>
+<body>
+    <h1>Quick Login Test</h1>
+    <button onclick="quickLogin()">Quick Login as Test User</button>
+    <div id="result"></div>
+    
+    <script>
+        async function quickLogin() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Logging in...</p>';
+            
+            try {
+                const response = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        email: 'test@test.com',
+                        password: 'test123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('trackmate_user', JSON.stringify(data.user));
+                    resultDiv.innerHTML = `
+                        <p style="color: green;">✅ Login successful!</p>
+                        <p>User: ${data.user.username}</p>
+                        <p>Session created</p>
+                        <br>
+                        <a href="calendar.html">Go to Calendar</a>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: red;">❌ Login failed: ${data.error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('trackmate_user');
+            if (user) {
+                document.getElementById('result').innerHTML = `
+                    <p style="color: blue;">ℹ️ Already logged in</p>
+                    <a href="calendar.html">Go to Calendar</a>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

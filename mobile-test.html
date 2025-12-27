@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Test - TrackMate</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <style>
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="debug-info">
+        <div>Width: <span id="width"></span>px</div>
+        <div>Height: <span id="height"></span>px</div>
+        <div>User Agent: <span id="ua"></span></div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <svg width="40" height="40" viewBox="0 0 60 60">
+                <rect x="5" y="5" width="20" height="20" rx="4" fill="#FF9F66"/>
+                <rect x="30" y="5" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="5" y="30" width="20" height="20" rx="4" fill="#9CDDDD"/>
+                <rect x="30" y="30" width="20" height="20" rx="4" fill="#FF9F66"/>
+            </svg>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>Mobile Test Dashboard</h1>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="left-column">
+                <!-- Quick Stats Cards -->
+                <div class="quick-stats-row">
+                    <div class="stat-card" style="background: white;">
+                        <div class="stat-icon">💻</div>
+                        <div class="stat-info">
+                            <div class="stat-label" style="color: #8E8E93;">Work Today</div>
+                            <div class="stat-value" style="color: #1C1C1E;">6.5<span>h</span></div>
+                        </div>
+                        <div class="stat-trend up">+12%</div>
+                    </div>
+                    
+                    <div class="stat-card" style="background: white;">
+                        <div class="stat-icon">📱</div>
+                        <div class="stat-info">
+                            <div class="stat-label" style="color: #8E8E93;">Phone Usage</div>
+                            <div class="stat-value" style="color: #1C1C1E;">3.2<span>h</span></div>
+                        </div>
+                        <div class="stat-trend down">-8%</div>
+                    </div>
+                </div>
+
+                <!-- AI Detection Widget -->
+                <div class="ai-status-widget" style="background: white;">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <span class="widget-icon">🤖</span>
+                            <h3 style="color: #1C1C1E;">AI Activity Detection</h3>
+                        </div>
+                    </div>
+                    <div class="ai-status-content">
+                        <div class="current-activity">
+                            <div class="activity-label" style="color: #8E8E93;">Current Activity</div>
+                            <div class="activity-detected" style="color: #1C1C1E;">2. Working 💻</div>
+                            <div class="activity-time" style="color: #8E8E93;">Last detected: Just now</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Widget -->
+                <div class="schedule-widget" style="background: white;">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <span class="widget-icon">📅</span>
+                            <h3 style="color: #1C1C1E;">Today's Schedule</h3>
+                        </div>
+                    </div>
+                    <div class="schedule-items">
+                        <div class="schedule-item">
+                            <div class="schedule-time" style="color: #1C1C1E;">09:00 AM</div>
+                            <div class="schedule-info">
+                                <div class="schedule-title" style="color: #1C1C1E;">Team Meeting</div>
+                                <div class="schedule-duration" style="color: #8E8E93;">1 hour</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function updateDebugInfo() {
+            document.getElementById('width').textContent = window.innerWidth;
+            document.getElementById('height').textContent = window.innerHeight;
+            document.getElementById('ua').textContent = navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop';
+        }
+        
+        updateDebugInfo();
+        window.addEventListener('resize', updateDebugInfo);
+        
+        // Log all elements
+        console.log('Stat cards:', document.querySelectorAll('.stat-card'));
+        console.log('Widgets:', document.querySelectorAll('.widget, .ai-status-widget, .schedule-widget'));
+        console.log('Computed styles of first stat card:');
+        const firstCard = document.querySelector('.stat-card');
+        if (firstCard) {
+            const styles = window.getComputedStyle(firstCard);
+            console.log('Background:', styles.background);
+            console.log('Color:', styles.color);
+            console.log('Display:', styles.display);
+            console.log('Width:', styles.width);
+            console.log('Height:', styles.height);
+        }
+    </script>
+</body>
+</html>

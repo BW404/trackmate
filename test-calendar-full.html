@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Test with Mock Login</title>
+    <link rel="stylesheet" href="assets/css/calendar.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-panel { background: #f0f0f0; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="test-panel">
+        <h2>Calendar API Test</h2>
+        <button onclick="testAuth()">1. Test Authentication</button>
+        <button onclick="testCalendarAPI()">2. Test Calendar API</button>
+        <button onclick="testStatsAPI()">3. Test Stats API</button>
+        <button onclick="initCalendar()">4. Initialize Calendar</button>
+        <div id="testResults"></div>
+    </div>
+    
+    <div id="calendarContainer">
+        <h1>Calendar Grid</h1>
+        <div id="calendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; max-width: 800px;">
+            <!-- Calendar will be generated here -->
+        </div>
+    </div>
+    
+    <div id="activityDetails">
+        <h2 id="selectedDate">Select a date</h2>
+        <div id="detailsContent"></div>
+        <div id="dailyStats" style="display: none;"></div>
+    </div>
+    
+    <script src="assets/js/calendar.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('testResults');
+        
+        async function testAuth() {
+            resultsDiv.innerHTML = '<div class="status info">Testing authentication...</div>';
+            
+            // Check localStorage
+            const userData = localStorage.getItem('trackmate_user');
+            
+            if (!userData) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ No user in localStorage. You need to login first.
+                        <br><br>
+                        <a href="login.html">Go to Login Page</a>
+                    </div>
+                `;
+                return false;
+            }
+            
+            const user = JSON.parse(userData);
+            resultsDiv.innerHTML = `
+                <div class="status success">
+                    ✅ User found in localStorage: ${user.username} (${user.email})
+                </div>
+            `;
+            return true;
+        }
+        
+        async function testCalendarAPI() {
+            resultsDiv.innerHTML = '<div class="status info">Testing Calendar API...</div>';
+            
+            try {
+                const response = await fetch('api/get-calendar-activities.php?month=2025-12', {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Calendar API Success!
+                            <br>Month: ${data.data.month}
+                            <br>Days with activity: ${data.data.calendar.length}
+                            <pre>${JSON.stringify(data.data.calendar.slice(0, 3), null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ API Error: ${data.error || 'Unknown error'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Network Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        async function testStatsAPI() {
+            resultsDiv.innerHTML = '<div class="status info">Testing Stats API...</div>';
+            
+            try {
+                const response = await fetch('api/get-activity-stats.php?period=today&date=2025-12-24', {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Stats API Success!
+                            <br>Activities: ${data.data.recent_activities ? data.data.recent_activities.length : 0}
+                            <pre>${JSON.stringify(data.data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ API Error: ${data.error || 'Unknown error'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Network Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function initCalendar() {
+            resultsDiv.innerHTML = '<div class="status info">Initializing calendar...</div>';
+            
+            try {
+                // Call the calendar.js function
+                if (typeof generateCalendar === 'function') {
+                    generateCalendar();
+                    resultsDiv.innerHTML = '<div class="status success">✅ Calendar initialized!</div>';
+                } else {
+                    resultsDiv.innerHTML = '<div class="status error">❌ generateCalendar function not found</div>';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        // Auto test on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                testAuth();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

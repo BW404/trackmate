@@ -602,6 +602,38 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    .auth-container {
+        max-width: 450px;
+    }
+    
+    .auth-left {
+        padding: 35px 25px;
+    }
+    
+    .brand-section h1 {
+        font-size: 32px;
+    }
+    
+    .tagline {
+        font-size: 16px;
+    }
+    
+    .auth-right {
+        padding: 35px 25px;
+    }
+    
+    .form-header h2 {
+        font-size: 28px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 14px 24px;
+        font-size: 15px;
+    }
+}
+
 @media (max-width: 576px) {
     body {
         padding: 10px;
@@ -610,6 +642,7 @@ body {
     .auth-container {
         border-radius: 16px;
         min-height: auto;
+        max-width: 100%;
     }
     
     .auth-left {
@@ -631,6 +664,7 @@ body {
     
     .feature-item {
         padding: 12px 15px;
+        min-width: 140px;
     }
     
     .feature-icon {
@@ -646,7 +680,11 @@ body {
     }
     
     .form-header h2 {
-        font-size: 26px;
+        font-size: 24px;
+    }
+    
+    .form-header p {
+        font-size: 14px;
     }
     
     .form-row {
@@ -654,8 +692,100 @@ body {
         gap: 24px;
     }
     
+    .btn-primary,
+    .btn-secondary {
+        padding: 13px 20px;
+        font-size: 14px;
+    }
+    
     .icon-large {
         font-size: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .auth-container {
+        border-radius: 12px;
+    }
+    
+    .auth-left,
+    .auth-right {
+        padding: 25px 16px;
+    }
+    
+    .brand-section h1 {
+        font-size: 24px;
+    }
+    
+    .tagline {
+        font-size: 14px;
+    }
+    
+    .features {
+        margin-top: 25px;
+        gap: 10px;
+    }
+    
+    .feature-item {
+        padding: 10px 12px;
+        min-width: 100%;
+        flex: auto;
+    }
+    
+    .feature-icon {
+        font-size: 22px;
+    }
+    
+    .feature-item p {
+        font-size: 13px;
+    }
+    
+    .form-header h2 {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+    
+    .form-header p {
+        font-size: 13px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    
+    .form-input {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 18px;
+        font-size: 13px;
+    }
+    
+    .divider span {
+        font-size: 13px;
+        padding: 0 12px;
+    }
+    
+    .auth-footer {
+        margin-top: 25px;
+        font-size: 13px;
+    }
+    
+    .icon-large {
+        font-size: 42px;
+        margin-bottom: 16px;
     }
 }
 

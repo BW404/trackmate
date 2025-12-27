@@ -80,10 +80,11 @@
             <!-- Summary Cards -->
             <div class="summary-cards">
                 <div class="summary-card">
-                    <div class="card-icon">📱</div>
+                    <div class="card-icon">⏱️</div>
                     <div class="card-info">
-                        <div class="card-label">Phone Usage</div>
-                        <div class="card-value">3.2 <span>hours</span></div>
+                        <div class="card-label">Total Time</div>
+                        <div class="card-value" id="totalHours">0 <span>hours</span></div>
+                        <div class="card-change" id="totalHoursChange"></div>
                     </div>
                 </div>
                 
@@ -91,15 +92,26 @@
                     <div class="card-icon">💻</div>
                     <div class="card-info">
                         <div class="card-label">Work Time</div>
-                        <div class="card-value">6.5 <span>hours</span></div>
+                        <div class="card-value" id="workHours">0 <span>hours</span></div>
+                        <div class="card-change" id="workHoursChange"></div>
                     </div>
                 </div>
                 
                 <div class="summary-card">
-                    <div class="card-icon">😴</div>
+                    <div class="card-icon">📱</div>
                     <div class="card-info">
-                        <div class="card-label">Sleep</div>
-                        <div class="card-value">7.8 <span>hours</span></div>
+                        <div class="card-label">Phone Usage</div>
+                        <div class="card-value" id="phoneHours">0 <span>hours</span></div>
+                        <div class="card-change" id="phoneHoursChange"></div>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-info">
+                        <div class="card-label">Productivity</div>
+                        <div class="card-value" id="productivityScore">0<span>%</span></div>
+                        <div class="card-change" id="productivityChange"></div>
                     </div>
                 </div>
                 
@@ -107,7 +119,7 @@
                     <div class="card-icon">🏃</div>
                     <div class="card-info">
                         <div class="card-label">Total Activities</div>
-                        <div class="card-value">24 <span>logged</span></div>
+                        <div class="card-value" id="totalActivities">0 <span>logged</span></div>
                     </div>
                 </div>
             </div>

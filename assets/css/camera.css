@@ -491,6 +491,10 @@ input:checked + .toggle-slider:before {
     .camera-grid {
         grid-template-columns: 1fr;
     }
+    
+    .camera-container {
+        padding: 1.5rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -498,15 +502,160 @@ input:checked + .toggle-slider:before {
         padding: 1rem;
     }
     
-    .status-card,
+    .status-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .status-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .status-header h2 {
+        font-size: 1.25rem;
+    }
+    
     .camera-feed-card,
     .detection-card,
     .activity-log-card,
     .snapshots-card {
-        padding: 1.5rem;
+        padding: 1.25rem;
+    }
+    
+    .card-header h3 {
+        font-size: 1.1rem;
     }
     
     .camera-controls {
         flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .control-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .detection-options {
+        gap: 1rem;
+    }
+    
+    .option-item {
+        padding: 0.75rem;
+    }
+    
+    .option-name {
+        font-size: 0.9rem;
+    }
+    
+    .option-desc {
+        font-size: 0.8rem;
+    }
+    
+    .ai-status-container {
+        padding: 1rem !important;
+    }
+    
+    .log-list {
+        max-height: 250px;
+    }
+    
+    .snapshots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .camera-container {
+        padding: 0.75rem;
+    }
+    
+    .status-card {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .status-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .status-text {
+        font-size: 0.875rem;
+    }
+    
+    .camera-feed-card,
+    .detection-card,
+    .activity-log-card,
+    .snapshots-card {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .card-header h3 {
+        font-size: 1rem;
+    }
+    
+    .control-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .detection-options {
+        gap: 0.75rem;
+    }
+    
+    .option-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .option-info {
+        width: 100%;
+    }
+    
+    .toggle-switch {
+        align-self: flex-end;
+    }
+    
+    .sensitivity-slider label {
+        font-size: 0.9rem;
+    }
+    
+    .slider-labels {
+        font-size: 0.75rem;
+    }
+    
+    .log-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+        padding: 0.75rem;
+    }
+    
+    .log-time {
+        font-size: 0.75rem;
+    }
+    
+    .log-text {
+        font-size: 0.875rem;
+    }
+    
+    .snapshots-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-clear,
+    .btn-view-all {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
     }
 }

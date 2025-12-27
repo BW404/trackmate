@@ -13,6 +13,38 @@ try {
     window.location.href = 'login.html';
 }
 
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const hamburger = document.getElementById('hamburgerBtn');
+    
+    if (sidebar && overlay && hamburger) {
+        sidebar.classList.toggle('mobile-open');
+        overlay.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        
+        // Prevent body scroll when menu is open
+        if (sidebar.classList.contains('mobile-open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+}
+
+// Close mobile menu when clicking nav links
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.sidebar .nav-item');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                toggleMobileMenu();
+            }
+        });
+    });
+});
+
 let cameraStream = null;
 let isRecording = false;
 let mediaRecorder = null;
@@ -20,6 +52,41 @@ let recordedChunks = [];
 let aiDetectionInterval = null;
 let isAnalyzing = false;
 let lastActivity = 'No activity detected yet';
+let useHybridDetection = true;
+let hybridServerOnline = false;
+
+// Check hybrid server status
+async function checkHybridServerStatus() {
+    try {
+        const response = await fetch('api/analyze-activity-hybrid.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ check_health: true })
+        });
+        
+        const result = await response.json();
+        hybridServerOnline = result.hybrid_available || false;
+        
+        const statusEl = document.getElementById('hybridServerStatus');
+        const dotEl = statusEl.querySelector('.status-dot');
+        
+        if (hybridServerOnline) {
+            statusEl.innerHTML = '<span class="status-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #48BB78;"></span> Server online ⚡';
+            dotEl.style.background = '#48BB78';
+        } else {
+            statusEl.innerHTML = '<span class="status-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #F56565;"></span> Server offline (using Ollama)';
+            dotEl.style.background = '#F56565';
+        }
+    } catch (error) {
+        console.log('Hybrid server check failed:', error);
+        hybridServerOnline = false;
+        const statusEl = document.getElementById('hybridServerStatus');
+        if (statusEl) {
+            statusEl.innerHTML = '<span class="status-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #F56565;"></span> Server offline (using Ollama)';
+        }
+    }
+}
 
 // Update date
 function updateDate() {
@@ -292,10 +359,10 @@ function startAIDetection() {
     
     addLogEntry('AI activity detection enabled', '🤖');
     
-    // Analyze frame every 10 seconds
+    // Analyze frame every 3 seconds (RTX 5090 optimization)
     aiDetectionInterval = setInterval(() => {
         analyzeCurrentFrame();
-    }, 10000);
+    }, 3000);
     
     // Analyze first frame immediately
     analyzeCurrentFrame();
@@ -319,44 +386,94 @@ async function analyzeCurrentFrame() {
     try {
         const videoElement = document.getElementById('cameraFeed');
         const canvas = document.createElement('canvas');
-        canvas.width = 320; // Smaller size for faster processing
-        canvas.height = 240;
+        canvas.width = 512; // Higher resolution for RTX 5090
+        canvas.height = 384;
         
         const ctx = canvas.getContext('2d');
         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
         
         // Convert to base64
-        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        const imageData = canvas.toDataURL('image/jpeg', 0.9);
         
         // Show analyzing status
-        updateDetectionStatus('Analyzing...', 'analyzing');
+        const detectionMethod = useHybridDetection && hybridServerOnline ? 'Hybrid ⚡' : 'Ollama 🤖';
+        updateDetectionStatus(`🔄 Analyzing (${detectionMethod})...`, 'analyzing');
+        
+        // Choose API endpoint based on detection method
+        const apiEndpoint = useHybridDetection ? 'api/analyze-activity-hybrid.php' : 'api/analyze-activity.php';
         
         // Send to API
-        const response = await fetch('api/analyze-activity.php', {
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // Include session cookies
             body: JSON.stringify({ image: imageData })
         });
         
         const result = await response.json();
         
-        if (result.error) {
-            console.error('AI Error:', result.error);
-            updateDetectionStatus('AI Error: ' + (result.message || result.error), 'error');
-            addLogEntry('AI detection error', '⚠️');
+        if (result.success) {
+            lastActivity = result.activity_name || result.activity;
+            const method = result.method || (useHybridDetection ? 'Hybrid' : 'Ollama');
+            const processingTime = result.processing_time ? ` (${result.processing_time}s)` : '';
+            const confidence = result.confidence ? ` ${Math.round(result.confidence * 100)}%` : '';
+            
+            updateDetectionStatus(`${lastActivity} - ${method}${confidence}${processingTime}`, 'detected');
+            addLogEntry(`Detected: ${lastActivity} [${method}]`, getActivityIcon(result.category));
+            
+            // Store in session storage for dashboard
+            storeActivityLog(result);
         } else {
-            lastActivity = result.activity;
-            updateDetectionStatus(result.activity, 'detected');
-            addLogEntry(`Detected: ${result.activity}`, '🔍');
+            console.error('AI Error:', result.error);
+            const errorMsg = result.message || result.error || 'Unknown error';
+            updateDetectionStatus('⚠️ ' + errorMsg, 'error');
+            addLogEntry('AI detection error', '⚠️');
         }
         
     } catch (error) {
         console.error('Analysis error:', error);
-        updateDetectionStatus('Connection error - Make sure Python server is running', 'error');
+        updateDetectionStatus('❌ Connection error - Make sure Python server is running', 'error');
+        addLogEntry('Connection error', '❌');
     } finally {
         isAnalyzing = false;
+    }
+}
+
+// Get icon based on activity category
+function getActivityIcon(category) {
+    const icons = {
+        1: '📱',
+        2: '💻',
+        3: '📱💻',
+        4: '😴',
+        5: '🍽️',
+        6: '🥤',
+        7: '🤷'
+    };
+    return icons[category] || '🔍';
+}
+
+// Store activity log for later use
+function storeActivityLog(result) {
+    try {
+        const logs = JSON.parse(localStorage.getItem('trackmate_activity_logs') || '[]');
+        logs.unshift({
+            activity: result.activity,
+            category: result.category,
+            timestamp: result.timestamp || new Date().toISOString(),
+            logId: result.log_id
+        });
+        
+        // Keep only last 100 logs
+        if (logs.length > 100) {
+            logs.splice(100);
+        }
+        
+        localStorage.setItem('trackmate_activity_logs', JSON.stringify(logs));
+    } catch (e) {
+        console.error('Error storing activity log:', e);
     }
 }
 
@@ -389,6 +506,37 @@ function logout() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     updateDate();
+    
+    // Check hybrid server status
+    checkHybridServerStatus();
+    
+    // Recheck hybrid server status every 30 seconds
+    setInterval(checkHybridServerStatus, 30000);
+    
+    // Handle hybrid detection toggle
+    const hybridToggle = document.getElementById('useHybridDetection');
+    if (hybridToggle) {
+        // Load saved preference
+        const savedPreference = localStorage.getItem('trackmate_use_hybrid');
+        if (savedPreference !== null) {
+            useHybridDetection = savedPreference === 'true';
+            hybridToggle.checked = useHybridDetection;
+        }
+        
+        // Handle toggle changes
+        hybridToggle.addEventListener('change', (e) => {
+            useHybridDetection = e.target.checked;
+            localStorage.setItem('trackmate_use_hybrid', useHybridDetection);
+            
+            const method = useHybridDetection ? 'Hybrid (MediaPipe + YOLO)' : 'Ollama AI';
+            addLogEntry(`Switched to ${method} detection`, '🔄');
+            
+            // Recheck server status if switching to hybrid
+            if (useHybridDetection) {
+                checkHybridServerStatus();
+            }
+        });
+    }
 });
 
 // Cleanup on page unload

@@ -154,12 +154,30 @@
     border-radius: 50%;
 }
 
-.activity-dot.study { background: #FF6B6B; }
-.activity-dot.meditation { background: #9CDDDD; }
-.activity-dot.exercise { background: #51CF66; }
+/* Activity category colors matching the AI detection */
+.activity-dot.phone { background: #9CDDDD; }
+.activity-dot.work { background: #FF9F66; }
+.activity-dot.phone-work { background: #FFB84D; }
 .activity-dot.sleep { background: #845EF7; }
-.activity-dot.screen { background: #FFA94D; }
-.activity-dot.code { background: #FF9F66; }
+.activity-dot.food { background: #51CF66; }
+.activity-dot.drink { background: #20C997; }
+.activity-dot.other { background: #ADB5BD; }
+
+/* Legend colors */
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.legend-color.phone { background: #9CDDDD; }
+.legend-color.work { background: #FF9F66; }
+.legend-color.phone-work { background: #FFB84D; }
+.legend-color.sleep { background: #845EF7; }
+.legend-color.food { background: #51CF66; }
+.legend-color.drink { background: #20C997; }
+.legend-color.other { background: #ADB5BD; }
 
 /* Activity Details Panel */
 .activity-details {
@@ -225,6 +243,115 @@
 .no-selection p {
     margin: 0;
     font-size: 0.95rem;
+}
+
+/* Activity Log Entries */
+.activity-entry {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: #F7FAFC;
+    border-radius: 12px;
+    border-left: 4px solid #FF9F66;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.activity-entry:hover {
+    background: #EDF2F7;
+    transform: translateX(4px);
+}
+
+.activity-time {
+    font-weight: 600;
+    color: #4A5568;
+    font-size: 0.875rem;
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-name {
+    font-weight: 600;
+    color: #2D3748;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-note {
+    color: #718096;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.no-activities {
+    text-align: center;
+    padding: 2rem;
+    color: #A0AEC0;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Daily Stats */
+#dailyStats {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #E2E8F0;
+}
+
+#dailyStats h4 {
+    font-size: 1rem;
+    color: #2D3748;
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #F7FAFC;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: #EDF2F7;
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 0.15rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #718096;
+    text-transform: capitalize;
 }
 
 .activity-list {
@@ -386,6 +513,11 @@
         font-size: 1.25rem;
     }
     
+    .nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
     .calendar-grid-container,
     .activity-details {
         padding: 1.5rem;
@@ -397,5 +529,94 @@
     
     .legend-items {
         gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .calendar-day {
+        padding: 0.625rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-container {
+        padding: 0.75rem;
+    }
+    
+    .calendar-card,
+    .activity-details,
+    .stats-card {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .calendar-nav {
+        padding: 0.875rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .calendar-nav h2 {
+        font-size: 1.1rem;
+    }
+    
+    .nav-controls {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .nav-btn {
+        width: 34px;
+        height: 34px;
+    }
+    
+    .calendar-grid-container {
+        padding: 1rem;
+    }
+    
+    .weekdays,
+    .calendar-grid {
+        gap: 2px;
+    }
+    
+    .weekday {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .calendar-day {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+        min-height: 45px;
+    }
+    
+    .day-number {
+        font-size: 0.85rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .stat-item {
+        padding: 0.875rem;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .legend-items {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .activity-details h3 {
+        font-size: 1rem;
     }
 }
