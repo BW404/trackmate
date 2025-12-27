@@ -373,15 +373,24 @@ async function analyzeCurrentFrame() {
             body: JSON.stringify({ image: imageData })
         });
         
+        const text = await response.text();
+        console.log('Raw response:', text);
+        
         if (!response.ok) {
             console.error('HTTP Error:', response.status, response.statusText);
-            const text = await response.text();
             console.error('Response:', text);
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const result = await response.json();
-        console.log('Analysis result:', result);
+        let result;
+        try {
+            result = JSON.parse(text);
+            console.log('Analysis result:', result);
+        } catch (e) {
+            console.error('JSON Parse Error:', e);
+            console.error('Response was:', text);
+            throw new Error('Invalid JSON response from server');
+        }
         
         if (result.success) {
             lastActivity = result.activity;
