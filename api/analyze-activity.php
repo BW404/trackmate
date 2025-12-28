@@ -333,7 +333,8 @@ Answer: First write the number (1-7), then explain what you see.";
             'success' => true,
             'activity' => $parsed['activity'],
             'category' => $parsed['category'],
-            'description' => substr($fullResponse, 0, 200),
+            'description' => $fullResponse, // Send full AI response to browser console
+            'ai_raw_response' => $fullResponse, // Also include as separate field
             'timestamp' => date('c')
         ];
         

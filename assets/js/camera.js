@@ -386,6 +386,9 @@ async function analyzeCurrentFrame() {
         try {
             result = JSON.parse(text);
             console.log('Analysis result:', result);
+            if (result.ai_raw_response) {
+                console.log('🤖 AI SAID:', result.ai_raw_response);
+            }
         } catch (e) {
             console.error('JSON Parse Error:', e);
             console.error('Response was:', text);
