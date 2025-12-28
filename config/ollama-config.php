@@ -25,6 +25,10 @@ define('OLLAMA_CONNECT_TIMEOUT', 10); // Connection timeout in seconds
 define('OLLAMA_NUM_PREDICT', 100); // Max tokens for response
 define('OLLAMA_TEMPERATURE', 0.3); // Lower = more focused responses (0.0-1.0)
 
+// SSL/TLS Settings
+define('OLLAMA_SSL_VERIFY_PEER', false); // Set to true in production with valid SSL
+define('OLLAMA_SSL_VERIFY_HOST', 0); // Set to 2 in production with valid SSL
+
 // Image Processing
 define('IMAGE_MAX_SIZE', 320); // Max width/height in pixels (smaller = faster)
 define('IMAGE_QUALITY', 80); // JPEG quality 1-100 (lower = faster)
