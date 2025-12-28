@@ -296,14 +296,14 @@ Answer: First write the number (1-7), then explain what you see.";
         
         $result = json_decode($response, true);
         
-        // if (!$result || !isset($result['response'])) {
-        //     return [
-        //         'success' => false,
-        //         'error' => 'Invalid response from Ollama',
-        //         'activity' => 'No Response',
-        //         'category' => 7
-        //     ];
-        // }
+        if (!$result || !isset($result['response'])) {
+            return [
+                'success' => false,
+                'error' => 'Invalid response from Ollama',
+                'activity' => 'No Response',
+                'category' => 7
+            ];
+        }
         
         $fullResponse = $result['response'];
         error_log("[" . date('H:i:s') . "] RAW AI RESPONSE: " . $fullResponse);
