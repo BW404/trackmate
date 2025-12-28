@@ -234,11 +234,6 @@ Choose ONE number (1-7):
 6 = Drinking  
 7 = Other
 
-VERY IMPORTANT:
-- Look at the HANDS carefully
-- If phone is IN HAND = choose 1 or 3
-- If phone is on desk but NOT in hand = choose 2
-- If person at computer with NO phone in hand = choose 2
 
 Answer: First write the number (1-7), then explain what you see.";
         
@@ -301,14 +296,14 @@ Answer: First write the number (1-7), then explain what you see.";
         
         $result = json_decode($response, true);
         
-        if (!$result || !isset($result['response'])) {
-            return [
-                'success' => false,
-                'error' => 'Invalid response from Ollama',
-                'activity' => 'No Response',
-                'category' => 7
-            ];
-        }
+        // if (!$result || !isset($result['response'])) {
+        //     return [
+        //         'success' => false,
+        //         'error' => 'Invalid response from Ollama',
+        //         'activity' => 'No Response',
+        //         'category' => 7
+        //     ];
+        // }
         
         $fullResponse = $result['response'];
         error_log("[" . date('H:i:s') . "] RAW AI RESPONSE: " . $fullResponse);
@@ -368,8 +363,10 @@ try {
     // Analyze with Ollama
     $aiResult = analyzeImageWithOllama($input['image']);
     
-    // Analyze with Ollama
-    $aiResult = analyzeImageWithOllama($input['image']);
+    // Always include the raw AI response in the output for debugging
+    if (isset($aiResult['ai_raw_response'])) {
+        $aiResult['description'] = $aiResult['ai_raw_response'];
+    }
     
     // If AI analysis was successful, log the activity
     if ($aiResult['success']) {
@@ -398,7 +395,9 @@ try {
                 'activity' => $aiResult['activity'],
                 'category' => $aiResult['category'],
                 'log_id' => $logId,
-                'timestamp' => $aiResult['timestamp']
+                'timestamp' => $aiResult['timestamp'],
+                'ai_raw_response' => $aiResult['ai_raw_response'] ?? null,
+                'description' => $aiResult['description'] ?? null
             ]);
             
         } catch (PDOException $e) {
@@ -410,7 +409,9 @@ try {
                 'activity' => $aiResult['activity'],
                 'category' => $aiResult['category'],
                 'warning' => 'Activity detected but not logged to database',
-                'timestamp' => $aiResult['timestamp']
+                'timestamp' => $aiResult['timestamp'],
+                'ai_raw_response' => $aiResult['ai_raw_response'] ?? null,
+                'description' => $aiResult['description'] ?? null
             ]);
         }
     } else {
