@@ -100,9 +100,12 @@ function resizeImageForAnalysis($imageData, $maxSize = null) {
 function parseActivityResponse($responseText, $activities) {
     $resultLower = strtolower($responseText);
     
+    error_log("[" . date('H:i:s') . "] PARSING: " . $responseText);
+    
     // Check if response starts with a number (1-7)
     if (preg_match('/^\s*(\d+)/', $responseText, $matches)) {
         $number = (int)$matches[1];
+        error_log("[" . date('H:i:s') . "] AI chose category: " . $number);
         
         // Less aggressive override - only force Working if VERY clear working indicators AND clear NOT holding phone
         if (($number == 1 || $number == 3)) {
@@ -118,10 +121,13 @@ function parseActivityResponse($responseText, $activities) {
             
             // Only override if explicitly stated phone is NOT in hands
             if ($clearlyNotHoldingPhone) {
+                error_log("[" . date('H:i:s') . "] OVERRIDE: Changed from " . $number . " to 2 (Working) - phone not in hands");
                 return [
                     'activity' => $activities[2],
                     'category' => 2
                 ];
+            } else {
+                error_log("[" . date('H:i:s') . "] KEEPING: Category " . $number . " - no clear indicators phone NOT in hands");
             }
         }
         
@@ -305,8 +311,7 @@ Answer: First write the number (1-7), then explain what you see.";
         }
         
         $fullResponse = $result['response'];
-        error_log("[" . date('H:i:s') . "] Response: " . substr($fullResponse, 0, 200));
-        error_log("[" . date('H:i:s') . "] Full result: " . json_encode($result));
+        error_log("[" . date('H:i:s') . "] RAW AI RESPONSE: " . $fullResponse);
         
         // Handle empty or whitespace-only responses
         if (empty(trim($fullResponse))) {
