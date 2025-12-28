@@ -35,5 +35,5 @@ define('IMAGE_QUALITY', 80); // JPEG quality 1-100 (lower = faster)
 
 // Caching
 define('ANALYSIS_INTERVAL', 2000); // Minimum ms between new analyses
-define('CACHE_DURATION', 3); // Seconds to cache identical images
+define('CACHE_DURATION', 0); // Seconds to cache identical images (set to 0 to disable)
 ?>
