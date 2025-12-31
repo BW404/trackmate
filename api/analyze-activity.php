@@ -228,7 +228,7 @@ Choose ONE number (1-7):
 
 1 = Using phone (person is HOLDING phone in their hand)
 2 = Working ( at desk with NO phone in hand)
-3 = Phone + Work (using phone and at desk)
+3 = Phone + Work (doing BOTH: person is ACTIVELY HOLDING and USING phone in their hand AND working at computer/desk)
 4 = Sleeping
 5 = Eating
 6 = Drinking  
