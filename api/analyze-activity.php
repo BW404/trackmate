@@ -233,7 +233,7 @@ Choose ONE number (1-7):
 5 = Eating
 6 = Drinking  
 7 = Other
-
+NOTE: Mobile phone sensivity is HIGH - if phone is in hand, choose 1 or 3.
 
 Answer: First write the number (1-7), then explain what you see.";
         
