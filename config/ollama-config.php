@@ -6,7 +6,7 @@
 
 // Ollama Server Configuration
 define('OLLAMA_API_URL', 'https://ollama1.bw404.com/api/generate');
-define('OLLAMA_MODEL', 'llava:7b'); // Options: qwen3-vl:2b, llava:7b, llava:13b, etc.
+define('OLLAMA_MODEL', 'qwen3-vl:2b'); // Options: qwen3-vl:2b, llava:7b, llava:13b, etc.
 
 // Activity Categories
 define('ACTIVITY_CATEGORIES', [
