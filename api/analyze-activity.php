@@ -227,8 +227,8 @@ function analyzeImageWithOllama($imageData) {
 Choose ONE number (1-7):
 
 1 = Using phone (person is HOLDING phone in their hand)
-2 = Working (using computer, typing, at desk with NO phone in hand)
-3 = Phone + Work (HOLDING phone AND at computer)
+2 = Working ( at desk with NO phone in hand)
+3 = Phone + Work (using phone and at desk)
 4 = Sleeping
 5 = Eating
 6 = Drinking  
