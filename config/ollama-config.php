@@ -30,7 +30,7 @@ define('OLLAMA_SSL_VERIFY_PEER', false); // Set to true in production with valid
 define('OLLAMA_SSL_VERIFY_HOST', 0); // Set to 2 in production with valid SSL
 
 // Image Processing
-define('IMAGE_MAX_SIZE', 320); // Max width/height in pixels (smaller = faster)
+define('IMAGE_MAX_SIZE', 480); // Max width/height in pixels (smaller = faster)
 define('IMAGE_QUALITY', 80); // JPEG quality 1-100 (lower = faster)
 
 // Caching
